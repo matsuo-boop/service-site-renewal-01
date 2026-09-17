@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>manebi.co.jp Phase 1 設計書｜manebi サービスサイト リニューアル</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#ffffff; --mist:#f4f7f9; --panel:#fafcfd; --line:#dde5ea;
+    --ink:#17242e; --ink2:#54636e; --ink3:#8695a0;
+    --blue:#1d9fd6; --blue-brand:#51d0ff; --blue-soft:#e8f7fe;
+    --yellow:#dced00; --yellow-soft:#f7fabf;
+    --purple:#7c78d8; --purple-soft:#eeedfb;
+    --good:#0f7a52; --warn:#a86b00; --bad:#c0392f;
+    --wf:#eef2f5; --wf-line:#b9c5cd;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+      --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+      --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+      --yellow:#d9e85a; --yellow-soft:#33370f;
+      --purple:#ada9f5; --purple-soft:#272544;
+      --good:#4ecf9a; --warn:#e0a44a; --bad:#ff8577;
+      --wf:#1a2630; --wf-line:#3d4c58;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+    --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+    --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+    --yellow:#d9e85a; --yellow-soft:#33370f;
+    --purple:#ada9f5; --purple-soft:#272544;
+    --good:#4ecf9a; --warn:#e0a44a; --bad:#ff8577;
+    --wf:#1a2630; --wf-line:#3d4c58;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    font-size:15px; line-height:1.9; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px; margin:0 auto; padding:56px 24px 120px}
+  a{color:var(--blue); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--blue) 40%,transparent)}
+  a:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--ink3); text-transform:uppercase}
+  h1{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:clamp(28px,4.5vw,40px); line-height:1.45; margin:14px 0 6px; text-wrap:balance}
+  h1 .ast{color:var(--blue-brand)}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:18px; font-size:13px; color:var(--ink2)}
+  .meta b{color:var(--ink); font-weight:500}
+  section{margin-top:72px}
+  h2{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:25px; line-height:1.45; margin:0 0 6px; scroll-margin-top:24px}
+  h2 .no{font-family:var(--mono); font-weight:500; font-size:13px; color:var(--blue); display:block; letter-spacing:.14em; margin-bottom:6px}
+  h2::after{content:""; display:block; width:52px; height:4px; margin-top:12px; background:var(--yellow); border-radius:2px}
+  h3{font-size:16.5px; font-weight:700; margin:36px 0 10px}
+  h3::before{content:"* "; color:var(--blue-brand); font-family:"Zen Old Mincho",serif; font-weight:700}
+  h4{font-size:14px; font-weight:700; margin:20px 0 6px}
+  p{margin:10px 0; max-width:48em}
+  ul,ol{margin:10px 0; padding-left:1.5em; max-width:48em}
+  li{margin:5px 0}
+  .lead{color:var(--ink2); font-size:14.5px; max-width:48em}
+  mark{background:linear-gradient(transparent 62%, var(--yellow-soft) 62%); color:inherit; padding:0 2px}
+  .muted{color:var(--ink3)} .small{font-size:13px}
+  .chip{display:inline-block; font-size:11px; font-weight:500; border-radius:999px; padding:1px 9px; margin-right:4px; white-space:nowrap; vertical-align:1px}
+  .chip.new{background:color-mix(in srgb,var(--good) 14%, var(--paper)); color:var(--good)}
+  .chip.keep{background:var(--mist); color:var(--ink2)}
+  .chip.re{background:var(--blue-soft); color:var(--blue)}
+  .chip.cms{background:var(--purple-soft); color:var(--purple)}
+  .chip.name{background:var(--yellow-soft); color:var(--warn)}
+  .tbl{overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:14px 0; background:var(--panel)}
+  table{border-collapse:collapse; width:100%; font-size:13px; line-height:1.65}
+  th,td{padding:8px 13px; text-align:left; vertical-align:top; border-top:1px solid var(--line)}
+  thead th{border-top:none; background:var(--mist); font-size:11.5px; letter-spacing:.05em; color:var(--ink2); white-space:nowrap}
+  td .u{font-family:var(--mono); font-size:12px; white-space:nowrap}
+  .callout{border:1px solid var(--line); border-radius:12px; padding:15px 20px; margin:18px 0; background:var(--panel)}
+  .callout.blue{background:var(--blue-soft); border-color:color-mix(in srgb,var(--blue) 25%,var(--line))}
+  .callout.purple{background:var(--purple-soft); border-color:color-mix(in srgb,var(--purple) 25%,var(--line))}
+  .callout .ct{font-size:12px; font-weight:700; letter-spacing:.08em; margin-bottom:6px; color:var(--blue)}
+  .callout.purple .ct{color:var(--purple)}
+  .callout p{max-width:none}
+
+  /* ---------- wireframe primitives ---------- */
+  .wfstage{border:1px solid var(--line); border-radius:14px; background:var(--mist); padding:22px; margin:16px 0; overflow-x:auto}
+  .wfcap{font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--ink3); margin-bottom:12px}
+  .browser{background:var(--paper); border:1px solid var(--wf-line); border-radius:10px; min-width:640px; overflow:hidden}
+  .browser.sp{min-width:0; width:260px; margin:0 auto}
+  .box{border:1.5px dashed var(--wf-line); background:var(--wf); border-radius:6px; padding:8px 10px; font-size:11.5px; color:var(--ink2); line-height:1.5; position:relative}
+  .box.solid{border-style:solid}
+  .box.cta{border-color:var(--blue); background:var(--blue-soft); color:var(--ink)}
+  .box.wid{border-color:var(--purple); background:var(--purple-soft)}
+  .num{display:inline-flex; align-items:center; justify-content:center; min-width:19px; height:19px; padding:0 4px;
+    border-radius:999px; background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:11px; font-weight:500; margin-right:6px; vertical-align:-3px}
+  .box.cta .num{background:var(--blue)}
+  .box.wid .num{background:var(--purple)}
+  .col{display:flex; flex-direction:column; gap:8px}
+  .navbar{display:flex; gap:6px; align-items:center; padding:9px 12px; border-bottom:1px solid var(--wf-line); font-size:11px; flex-wrap:nowrap; white-space:nowrap}
+  .navbar .logo{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:13px; color:var(--ink); margin-right:6px}
+  .navbar .it{padding:3px 7px; border-radius:5px; background:var(--wf); border:1px solid var(--wf-line); color:var(--ink2)}
+  .navbar .it.on{background:var(--yellow-soft); border-color:var(--warn); color:var(--ink)}
+  .navbar .sp1{flex:1}
+  .navbar .bt{padding:3px 8px; border-radius:6px; font-weight:700}
+  .navbar .bt.dl{background:var(--blue); color:#fff}
+  .navbar .bt.demo{border:1.5px solid var(--blue); color:var(--blue)}
+  .mega{padding:12px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; border-bottom:1px solid var(--wf-line); background:var(--panel)}
+  .mega .g h5{margin:0 0 6px; font-size:11px; color:var(--ink3); letter-spacing:.08em; font-weight:700}
+  .mega .g div{font-size:11.5px; padding:2px 0; color:var(--ink2)}
+  .mega .g div b{color:var(--ink); font-weight:500}
+  .art{display:grid; grid-template-columns:1fr 200px; gap:10px; padding:12px}
+  @media (max-width:640px){ .mega{grid-template-columns:1fr} }
+  footer{margin-top:90px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink3)}
+
+  .sitenav{position:sticky; top:0; z-index:99; background:color-mix(in srgb,var(--paper) 90%,transparent);
+    backdrop-filter:saturate(150%) blur(10px); border-bottom:1px solid var(--line)}
+  .sitenav-in{max-width:900px; margin:0 auto; padding:10px 24px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .sitenav a{font-size:12.5px; color:var(--ink2); border-bottom:none; white-space:nowrap}
+  .sitenav a:hover{color:var(--blue)}
+  .sitenav a.home{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:14px; color:var(--ink)}
+  .sitenav a.on{color:var(--blue); font-weight:700}
+  .sitenav .sp{flex:1}
+  @media print{ .sitenav{display:none} }
+</style>
+</head>
+<body>
+<nav class="sitenav"><div class="sitenav-in"><a class="home" href="../">manebi リニューアル<span style="color:var(--blue-brand)">*</span></a><a  href="../requirements/">要件定義書</a><a class="on" href="../phase1-design/">Phase 1 設計書</a><a  href="../research/">調査レポート</a><span class="sp"></span><a href="https://github.com/matsuo-boop/service-site-renewal-01">GitHub &#8599;</a></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Phase 1 Design &nbsp;/&nbsp; v1.3 draft — サービス3グループ化（経営・組織／教育／業界）・東証ロゴ・Prime相互リンク</div>
+  <h1>manebi.co.jp<br>Phase 1 設計書<span class="ast">*</span> — IA・グロナビ / T9 コラム</h1>
+  <p class="lead">要件定義書 v1.3 の §04（IA）と §05 T9（コラム記事テンプレ）を、制作・実装に渡せる粒度に具体化する。凡例：<span class="chip new">新設</span><span class="chip keep">既存維持</span><span class="chip re">再構築</span><span class="chip cms">CMS量産</span><span class="chip name">表記変更</span></p>
+  <div class="meta">
+    <span>作成：<b>マーケティング部 松尾</b>（設計支援：Claude）</span>
+    <span>作成日：<b>2026-09-02</b></span>
+    <span>親文書：<b>リニューアル要件定義書 v1.3</b></span>
+  </div>
+</header>
+
+<!-- ================================================================ -->
+<section id="p1">
+  <h2><span class="no">PART 1</span>グローバルナビ詳細設計</h2>
+
+  <h3>設計原則</h3>
+  <ol>
+    <li><strong>BOFU 3導線（料金・機能・事例）を第一階層に置く。</strong>迷ったら「検討者が営業に聞きたいこと」順</li>
+    <li><strong>「サービス＝提供形態」「教材・研修＝学ぶ中身」に役割を分離</strong>（現行の「サービス／研修ラインナップ」の重複を解消）。さらに<mark>学ぶ中身の側では「eラーニング教材」「集合研修」「テーマから探す」の3切り口を並置し、どの形態の話かを常に明示する</mark>。テーマページ（T6）は形態横断のハブとし、各テーマに対応形態バッジ（<span class="chip re">eラーニング</span><span class="chip cms">集合研修</span>）を統一表示。「eラーニングも集合研修もできる（ハイブリッド）」はLMS専業競合に対する構造的差別化として積極的に見せる</li>
+    <li>グロナビはリード獲得専用。<mark>パートナー制度・会社情報はフッターへ降格</mark></li>
+    <li>受講者（3ヶ月960クリックのログイン流入）はヘッダー右上の専用導線で1クリック退避させ、検討者の動線と混ぜない</li>
+    <li>既存URLは変更しない。新設URLは「案」であり、Phase 1の既存URL棚卸しで確定する</li>
+  </ol>
+
+  <h3>PCヘッダー構成（ワイヤー）</h3>
+  <div class="wfstage">
+    <div class="wfcap">PC HEADER + MEGA MENU（「研修テーマ」展開時）</div>
+    <div class="browser">
+      <div class="navbar">
+        <span class="logo">manebi*</span>
+        <span class="it">サービス ▾</span><span class="it">機能 ▾</span><span class="it">料金</span><span class="it on">教材・研修 ▾</span><span class="it">導入事例</span><span class="it">お役立ち ▾</span>
+        <span class="sp1"></span>
+        <span class="it">受講者ログイン ↗</span>
+        <span class="bt demo">無料デモ</span>
+        <span class="bt dl">資料DL</span>
+      </div>
+      <div class="mega">
+        <div class="g"><h5>🖥 eラーニング教材</h5>
+          <div><b>教材・講座を探す</b>（約8,000教材）</div><div>人気講座ランキング</div><div>教材カテゴリ一覧</div><div class="muted" style="font-size:10.5px">「eラーニングではこういう教材がある」の受け皿</div>
+        </div>
+        <div class="g"><h5>👥 集合研修</h5>
+          <div><b>集合研修ラインナップ</b></div><div>講師派遣・カスタマイズ</div><div>eラーニング×集合研修の組み合わせ事例</div><div class="muted" style="font-size:10.5px">「集合研修もできる」の受け皿</div>
+        </div>
+        <div class="g"><h5>テーマから探す（形態横断）</h5>
+          <div><b>新入社員研修</b> <span style="font-size:9px">🖥👥</span></div><div><b>ハラスメント研修</b>（カスハラ対応）<span style="font-size:9px">🖥👥</span></div><div><b>管理職研修</b> <span style="font-size:9px">🖥👥</span></div><div><b>コンプライアンス研修</b> <span style="font-size:9px">🖥</span></div><div><b>テーマ一覧を見る →</b></div>
+        </div>
+      </div>
+      <div style="padding:26px 12px; font-size:11px; color:var(--ink3); text-align:center">（ページ本文）</div>
+    </div>
+  </div>
+  <p class="small muted">ヘッダーCTAは「資料DL（塗り・最優先）」「無料デモ（枠線・第2）」の2本固定。TELはヘッダーから外しフッターへ（発信計測ができず、CTA注意を分散させるため。営業側の要望があれば「お役立ち ▾」内に残す）。</p>
+
+  <h3>メガメニュー全リンク定義</h3>
+
+  <h4>1. サービス ▾（v1.3再構成：ファネル上位→下位の3グループ）</h4>
+  <p class="small">「経営・組織づくりの上流から、現場の教育・定着まで一気通貫でできる会社」を1つのメニューで表現する。<mark>DXコンサルティングは撤去（v1.3決定）</mark>。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>グループ / ラベル</th><th>URL</th><th>種別</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td colspan="4" style="background:var(--mist); font-weight:700; font-size:12px">経営・組織（ファネル上位）</td></tr>
+      <tr><td>Wonder AI（経営者向けAI構築・コンサル）</td><td class="u">受けページ要確認（既存LP有無）</td><td><span class="chip new">新設</span></td><td>kintone商品名に既存。「manebi＝AIに強い」訴求（T3 AI機能ページ）と相互リンクで補強し合う</td></tr>
+      <tr><td>企業リブランディング</td><td class="u">受けページ要確認</td><td><span class="chip new">新設</span></td><td>新規サービス。概要＋問合せの軽量ページで開始（CV主目的ではなく「上流もできる」の信頼形成）</td></tr>
+      <tr><td>人事評価・制度コンサルティング（グループ会社：プライムコンサルタント）</td><td class="u">外部（primec.co.jp）↗</td><td><span class="chip new">新設</span></td><td>子会社Primeへの送客。外部遷移＋グループ会社であることを明示（勝手リンクに見せない）。<mark>相互リンク：Prime側フッター/サービス欄からmanebi教育サービスへの返しリンクを先方と調整</mark></td></tr>
+      <tr><td colspan="4" style="background:var(--mist); font-weight:700; font-size:12px">人材開発・教育（ファネル下位＝主力）</td></tr>
+      <tr><td>manebi eラーニング</td><td class="u">/service/e-learning/</td><td><span class="chip re">再構築</span></td><td>トピッククラスタのピラー。配下に専用ローカルナビ（機能/料金/教材/事例）</td></tr>
+      <tr><td>集合研修</td><td class="u">既存URL維持（棚卸しで確定）</td><td><span class="chip keep">既存維持</span></td><td>eラーニングとのハイブリッド訴求を追記</td></tr>
+      <tr><td colspan="4" style="background:var(--mist); font-weight:700; font-size:12px">業界向けソリューション</td></tr>
+      <tr><td>派遣会社の教育（派遣のミカタ）</td><td class="u">外部（haken-mikata.jp）↗</td><td><span class="chip keep">既存維持</span></td><td rowspan="3">本体側T7業界別LP公開後はT7を主リンクに差し替え、外部サイトは副リンク化</td></tr>
+      <tr><td>警備業の教育（警備乃ミカタ）</td><td class="u">外部（keibi-mikata.jp）↗</td><td><span class="chip keep">既存維持</span></td></tr>
+      <tr><td>建設・製造業の教育</td><td class="u">外部 ↗</td><td><span class="chip keep">既存維持</span></td></tr>
+      <tr><td style="text-decoration:line-through">DXコンサルティング</td><td class="u" style="text-decoration:line-through">外部サイト</td><td><span class="chip name">撤去</span></td><td>ナビ・フッター・T1から削除（v1.3決定）。外部リンクのため301不要、社内周知のみ【事業側への確認要】</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>2. 機能 ▾</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL（案）</th><th>種別</th><th>対応テンプレ / 受けKW</th></tr></thead>
+    <tbody>
+      <tr><td>機能一覧</td><td class="u">/function/</td><td><span class="chip new">新設</span></td><td>T3。「LMS 機能」「eラーニングシステム」</td></tr>
+      <tr><td>AI機能</td><td class="u">/function/ai/</td><td><span class="chip new">新設</span></td><td>T3。「manebi＝AIに強い」の旗艦ページ（LLMO）</td></tr>
+      <tr><td>セキュリティ</td><td class="u">/security/</td><td><span class="chip new">新設</span></td><td>T4。情シス稟議対応</td></tr>
+      <tr><td>システム連携（カオナビ・SmartHR等）</td><td class="u">/function/#integration</td><td><span class="chip new">新設</span></td><td>T3内アンカー。壁打ちシートID15</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">※「教材・講座紹介」はメニュー4「教材・研修」へ移設（v1.2）。機能＝システムの話、教材・研修＝学ぶ中身の話、と語彙を完全分離する。</p>
+
+  <h4>3. 料金（メガメニューなし・直リンク）</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL（案）</th><th>種別</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>料金</td><td class="u">/price/</td><td><span class="chip new">新設</span></td><td>T2。見積シミュレーター統合。simulation-cp からは301せず並走→効果確認後に統合判断（広告LPとして利用中のため）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>4. 教材・研修 ▾（旧「研修ラインナップ」の後継・v1.2再設計）</h4>
+  <p class="small">「eラーニングではこういう教材がある」「集合研修もできて、こういうラインナップがある」を1つのメニューで両方明示する。3切り口構成：</p>
+
+  <h4 style="margin-left:1em">4-a. eラーニング教材 🖥</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL（案）</th><th>種別</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>教材・講座を探す（約8,000教材）</td><td class="u">/course/（既存強化）</td><td><span class="chip re">再構築</span></td><td>T8。owned講座のみ。「eラーニング 教材」「講座 一覧」の受け皿。教材数はグローバル値から自動表示</td></tr>
+      <tr><td>人気講座ランキング／教材カテゴリ一覧</td><td class="u">/course/#ranking ほか</td><td><span class="chip new">新設</span></td><td>T8内。受講データ実績で「選ばれている教材」を見せる</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4 style="margin-left:1em">4-b. 集合研修 👥</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL（案）</th><th>種別</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>集合研修ラインナップ</td><td class="u">/service/group-training/lineup/（案）</td><td><span class="chip new">新設</span></td><td>T14。テーマ×階層の一覧表＋各プログラム概要。<mark>kintone「集合研修テーママスタ」を元データにできるか要確認</mark>（マスタ連動なら追加・変更が自動反映＝運用要件と整合）</td></tr>
+      <tr><td>講師派遣・カスタマイズ</td><td class="u">集合研修ページ内</td><td><span class="chip re">再構築</span></td><td>既存集合研修ページの拡充</td></tr>
+      <tr><td>eラーニング×集合研修の組み合わせ事例</td><td class="u">/case/?tag=hybrid</td><td><span class="chip new">新設</span></td><td>T5のタグ絞り込みへのショートカット（壁打ちシートのメモ「集合研修と組み合わせてる事例はコチラ」）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4 style="margin-left:1em">4-c. テーマから探す（形態横断）<span class="chip cms">CMS量産</span></h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL（案）</th><th>種別</th><th>受けKW（月間検索・現状順位）</th></tr></thead>
+    <tbody>
+      <tr><td>新入社員研修</td><td class="u">既存URL維持</td><td><span class="chip re">再構築</span></td><td>「新入社員研修とは」2,900（ピラー記事 m-0301 と連携）</td></tr>
+      <tr><td>若手・中堅社員研修</td><td class="u">/training/young/</td><td><span class="chip new">新設</span></td><td>「若手 研修」「中堅社員 研修」</td></tr>
+      <tr><td>リーダー研修</td><td class="u">既存URL維持</td><td><span class="chip keep">既存維持</span></td><td>「ユニットリーダー研修」3,345表示・4.6位の実績あり</td></tr>
+      <tr><td>管理職研修（マネジメント研修を改称・統合）</td><td class="u">既存URL維持</td><td><span class="chip re">再構築</span></td><td>管理職カテゴリは平均75〜82位で最弱 → 最優先で立て直し</td></tr>
+      <tr><td><strong>ハラスメント研修</strong>（カスハラ対応を含む）</td><td class="u">/training/harassment/</td><td><span class="chip new">新設</span></td><td>ハラスメントカテゴリ総検索134,100。<mark>カスハラ改正法 2026/10/1施行 → 最優先公開</mark>。エンジン第一クラスターと連携</td></tr>
+      <tr><td>コンプライアンス研修</td><td class="u">既存URL維持</td><td><span class="chip re">再構築</span></td><td>「コンプライアンス研修 おすすめ」8位、「コンプライアンスとは」4,500</td></tr>
+      <tr><td>情報セキュリティ研修</td><td class="u">/training/security/</td><td><span class="chip new">新設</span></td><td>既存LP（情報セキュSTD）と役割整理</td></tr>
+      <tr><td>AI・DX研修</td><td class="u">/training/ai-dx/</td><td><span class="chip new">新設</span></td><td>AI訴求（壁打ちシートID21）と両輪</td></tr>
+      <tr><td>ビジネスマナー研修</td><td class="u">/training/business-manner/</td><td><span class="chip new">新設</span></td><td>新人パッケージと連携</td></tr>
+      <tr><td>テーマ一覧（インデックス）</td><td class="u">/training/</td><td><span class="chip new">新設</span></td><td>全テーマ×対応形態のマトリクス表を掲載。旧「オープン研修」の /training/ リンクは全テンプレから撤去済みであることを公開前に確認</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">初期リリースは上記10本。以降はT6テンプレでCMS的に追加（メンタルヘルス、OJT、営業研修、評価者研修…）。メニューには「一覧を見る」を常設し、本数が増えてもナビが崩れない構造にする。</p>
+  <div class="callout blue">
+    <div class="ct">T6テーマLP＝形態横断ハブ（v1.2）</div>
+    <p>各テーマLPには対応形態バッジ（🖥eラーニング／👥集合研修）を統一表示し、本文は<strong>「eラーニングで学ぶ（該当owned講座の紹介→T8）」「集合研修で実施する（プログラム・講師→T14）」「組み合わせる（ハイブリッド活用例＋事例）」の3ブロック構成</strong>とする。検討者は「ハラスメント研修をやりたい」というテーマ起点で来るので、形態の選択肢はテーマページの中で提示するのが自然。かつ「両方できる」はLMS専業（learningBOX等）にも研修専業にもない構造的差別化として、テーマページ・TOP・比較表で一貫して訴求する。</p>
+  </div>
+
+  <h4>5. 導入事例 ▾</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL（案）</th><th>種別</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>導入事例トップ（絞り込み検索）</td><td class="u">/case/（既存強化）</td><td><span class="chip re">再構築</span></td><td>T5。業界×規模×課題フィルタ</td></tr>
+      <tr><td>業界別：製造業 / IT・通信 / 小売・サービス / 派遣 / 警備 / 建設 / 医療・福祉</td><td class="u">/case/industry/{slug}/</td><td><span class="chip new">新設</span></td><td>メガメニューに業界ショートカットを直置き（営業要望の業界別事例）</td></tr>
+      <tr><td>数字で見るmanebi</td><td class="u">/case/#stats</td><td><span class="chip new">新設</span></td><td>業種比率・継続率・ロゴ壁（壁打ちシートID3）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>6. お役立ち ▾</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>ラベル</th><th>URL</th><th>種別</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>資料ダウンロード</td><td class="u">/resources/（既存）</td><td><span class="chip name">表記変更</span></td><td>旧「お役立ち資料」。T10で3点セット・稟議テンプレを拡充</td></tr>
+      <tr><td>コラム</td><td class="u">/column/（既存）</td><td><span class="chip name">表記変更</span></td><td>旧「お役立ち記事」</td></tr>
+      <tr><td>セミナー</td><td class="u">/seminar/（既存）</td><td><span class="chip keep">既存維持</span></td><td></td></tr>
+      <tr><td>よくあるご質問</td><td class="u">/faq/</td><td><span class="chip new">新設</span></td><td>ビジネス観点＋情シス観点＋反論処理FAQの集約（構造化データ FAQPage）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>ヘッダー右ユーティリティ</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>要素</th><th>仕様</th></tr></thead>
+    <tbody>
+      <tr><td>受講者ログイン ↗</td><td>テキストリンク（外部遷移アイコン付き）→ LMSログインURL【要確認】。hover時に「manebi eラーニングをご利用中の方」ツールチップ。<mark>404/迷子対策として /login/ に案内ページを新設</mark>し「manebi ログイン」検索（3ヶ月960クリック）の受け皿にする</td></tr>
+      <tr><td>[無料デモ]（枠線ボタン）</td><td>遷移先 /demo/。マイクロコピーはボタン下ではなく遷移先FVで「最短30分」訴求（§07準拠）</td></tr>
+      <tr><td>[資料DL]（塗りボタン・最右）</td><td>遷移先 /resources/service/（3点セットフォーム直行）。全ページ追従（スクロールで縮小ヘッダーにも残す）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>SP（モバイル）挙動</h3>
+  <ul>
+    <li>ハンバーガー内は上記6メニューのアコーディオン＋「受講者ログイン」を最上部に（モバイルは受講者比率が高い想定）</li>
+    <li>画面下部に<strong>固定ボトムバー：[資料DL]（塗り）＋[無料デモ]（枠線）の2分割</strong>。コラム閲覧中も常時表示（T9の計測仕様participate）</li>
+    <li>メガメニューはSPでは2階層アコーディオンに畳む。「一覧を見る」リンクを各グループ末尾に必ず置く</li>
+  </ul>
+
+  <h3>フッター（ペルソナ別3ブロック）</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>ブロック</th><th>リンク</th></tr></thead>
+    <tbody>
+      <tr><td><strong>導入をご検討中の方</strong></td><td>eラーニング / 集合研修 / 機能一覧 / 料金 / 教材・講座 / 導入事例 / セキュリティ / 資料ダウンロード / 無料デモ / よくあるご質問 / 研修テーマ一覧（＋テーマ別リンク展開） / 業界向け（派遣・警備・建設）</td></tr>
+      <tr><td><strong>ご利用中の方</strong></td><td>受講者ログイン / 管理者ログイン【要確認】 / ヘルプセンター / セミナー / お問い合わせ</td></tr>
+      <tr><td><strong>パートナー・企業情報</strong></td><td>パートナー制度（グロナビから移設） / 会社概要（corp） / コーポレートサイト / IR / <mark>グループ会社：プライムコンサルタント ↗</mark> / プライバシーポリシー / 情報セキュリティ方針 / サイトマップ</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">フッター最上部に最終CTA帯（§07の状態別3択：資料が欲しい／相談したい／実際の画面を見たい）を全ページ共通で設置。</p>
+
+  <h4>フッター信頼要素帯（v1.3追加）</h4>
+  <ul>
+    <li><strong>東証上場ロゴ＋証券コード</strong>をフッター会社情報エリアに常設。<mark>共通フッターパーツとして部品化し、本体・corp・派遣・警備・建設の全サイトに配置</mark>（corpと業界サイトは各管轄へ配置依頼）。【要確認】市場区分・証券コード・東証の上場会社ロゴ使用規定（申請・表示ルールあり）</li>
+    <li>並びに ISMS・Pマーク等の認証マーク（認証番号付き）を配置し「上場企業×認証」の信頼帯として1セット化。数値・ロゴはグローバル値管理（運用要件）に含める</li>
+  </ul>
+
+  <h3>表記変更一覧</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>旧</th><th>新</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td>お役立ち記事</td><td><strong>コラム</strong></td><td>一般名詞化・短縮。パンくず/カテゴリ表記も統一</td></tr>
+      <tr><td>研修ラインナップ</td><td><strong>教材・研修</strong></td><td>「eラーニングの教材の話か、集合研修の話か分からない」曖昧さを解消。メニュー内で eラーニング教材／集合研修／テーマから探す の3切り口を明示（v1.2）</td></tr>
+      <tr><td>お役立ち資料</td><td><strong>資料ダウンロード</strong></td><td>行動と一致させCTAと同語彙に</td></tr>
+      <tr><td>マネジメント研修（＋リーダー研修と並列）</td><td><strong>管理職研修／リーダー研修</strong></td><td>検索語彙に合わせる（「マネジメント研修」は残すが階層を整理）</td></tr>
+      <tr><td>（なし）</td><td><strong>受講者ログイン</strong></td><td>960クリック/3ヶ月の迷子流入の受け皿</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="p2">
+  <h2><span class="no">PART 2</span>T9 コラム記事テンプレート設計</h2>
+  <p class="lead">目的：コラム経由CV <strong>0件 → 資料DL目標125件/月の主ドライバー</strong>に変える（上位10記事だけで約6,700セッション/月が着地している）。直帰9割の読者を「読み終わる前に1回、読み終わった後に1回」オファーに接触させる。</p>
+
+  <h3>ワイヤーフレーム（PC）</h3>
+  <div class="wfstage">
+    <div class="wfcap">T9 ARTICLE — PC（本文カラム 720px + サイドバー 300px）</div>
+    <div class="browser">
+      <div class="navbar"><span class="logo">manebi*</span><span class="it">…グロナビ…</span><span class="sp1"></span><span class="bt demo">無料デモ</span><span class="bt dl">資料DL</span></div>
+      <div class="art">
+        <div class="col">
+          <div class="box"><span class="num">1</span>パンくず＋カテゴリタグ（例：コラム &gt; ハラスメント）</div>
+          <div class="box solid" style="padding:14px"><span class="num">2</span><b>H1タイトル</b><br>公開日・更新日／監修者名＋顔写真（E-E-A-T）／読了目安</div>
+          <div class="box"><span class="num">3</span>リード文（結論先出し 3〜4行）</div>
+          <div class="box cta"><span class="num">4</span><b>リード直下CTA（テキスト型・控えめ）</b><br>「※◯◯の実務チェックリスト付き資料はこちら（無料）」— カテゴリ連動</div>
+          <div class="box"><span class="num">5</span>目次（h2自動生成・開閉式）</div>
+          <div class="box" style="min-height:64px"><span class="num">6</span>本文ブロック（h2 × n）… 図表・表は横スクロールコンテナ</div>
+          <div class="box cta"><span class="num">7</span><b>インラインCTAバナー（カテゴリ連動）</b><br>挿入規則：2つ目のh2の直前に1本目、以降h2 3本ごと（最大3本）</div>
+          <div class="box" style="min-height:48px">（本文つづき）</div>
+          <div class="box wid"><span class="num">8</span><b>関連講座ウィジェット</b>：記事カテゴリに対応するowned講座 3件（講座名・時間・レベル → T8詳細へ）</div>
+          <div class="box" style="min-height:48px">（本文つづき〜まとめh2）</div>
+          <div class="box cta" style="padding:14px"><span class="num">9</span><b>記事末メインCTA（最重要）</b><br>カテゴリ連動WP or「manebiがわかる資料3点セット」大型バナー＋ボタン<br><span class="muted">マイクロコピー「入力1分／その場でDL／しつこい営業はしません」</span></div>
+          <div class="box"><span class="num">10</span>監修者・執筆ポリシーボックス（E-E-A-T／全記事共通パーツ）</div>
+          <div class="box"><span class="num">11</span>関連記事（同クラスタ4件）＋<b>ピラーへの誘導リンク</b>（例「eラーニングの選び方 完全ガイド →」）</div>
+        </div>
+        <div class="col">
+          <div class="box cta" style="min-height:110px"><span class="num">12</span><b>追従CTAカード（sticky）</b><br>[資料DL（塗り）]<br>[無料デモ（枠線）]<br><span class="muted">「最短30分で試せます※」</span></div>
+          <div class="box">人気記事ランキング 5件</div>
+          <div class="box wid">関連する研修テーマLP（T6）2件</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>ワイヤーフレーム（SP）</h3>
+  <div class="wfstage">
+    <div class="wfcap">T9 ARTICLE — SP（1カラム・サイドバー要素は本文末尾へ）</div>
+    <div class="browser sp">
+      <div class="navbar"><span class="logo">manebi*</span><span class="sp1"></span><span class="it">☰</span></div>
+      <div class="col" style="padding:10px">
+        <div class="box"><span class="num">2</span>H1＋メタ</div>
+        <div class="box"><span class="num">3</span>リード文</div>
+        <div class="box cta"><span class="num">4</span>テキストCTA</div>
+        <div class="box"><span class="num">5</span>目次（初期折りたたみ）</div>
+        <div class="box" style="min-height:56px"><span class="num">6</span>本文</div>
+        <div class="box cta"><span class="num">7</span>インラインCTA</div>
+        <div class="box wid"><span class="num">8</span>関連講座</div>
+        <div class="box cta"><span class="num">9</span>記事末メインCTA</div>
+        <div class="box"><span class="num">10</span>〜<span class="num">11</span>監修者・関連記事</div>
+      </div>
+      <div class="navbar" style="border-top:1px solid var(--wf-line); border-bottom:none">
+        <span class="bt dl" style="flex:1; text-align:center"><span class="num" style="background:#fff;color:var(--blue)">13</span>資料DL</span>
+        <span class="bt demo" style="flex:1; text-align:center">無料デモ</span>
+      </div>
+    </div>
+  </div>
+  <p class="small muted">⑬ SP固定ボトムバーは記事50%読了で出現（読み始めの邪魔をしない）。「×」で閉じられ、同一セッション中は再表示しない。</p>
+
+  <h3>スロット仕様（実装要件）</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>要素</th><th>仕様・ルール</th></tr></thead>
+    <tbody>
+      <tr><td>2</td><td>記事ヘッダー</td><td>更新日はリライト時に自動更新（Article構造化データの dateModified と連動）。監修者はマスタ管理（別記事と共通化）【監修体制は要決定】</td></tr>
+      <tr><td>4</td><td>リード直下CTA</td><td>テキストリンク型。バナーにしない（読み始めの離脱防止）。文言はCTAセットマスタから出力</td></tr>
+      <tr><td>7</td><td>インラインCTA</td><td>WordPressブロックパターン <span class="u">manebi/cta-inline</span>。位置はテンプレが自動挿入（本文には書かない）。h2数が3未満の記事は0本</td></tr>
+      <tr><td>8</td><td>関連講座</td><td>ブロックパターン <span class="u">manebi/course-widget</span>。記事カテゴリ→講座タグのマッピングで自動選定、手動上書き可。owned講座のみ</td></tr>
+      <tr><td>9</td><td>記事末メインCTA</td><td>フォーム直埋めはせずバナー→T11フォームへ（フォーム表示速度と計測の単純化を優先）。オファーはCTAセットマスタ</td></tr>
+      <tr><td>11</td><td>ピラーリンク</td><td>クラスタ規則（要件定義 §06）：全コラムから該当ピラーへ統一アンカーテキストで1本必須</td></tr>
+      <tr><td>12</td><td>追従サイドCTA</td><td>sticky。スクロール率25%から表示</td></tr>
+      <tr><td>全体</td><td>構造化データ</td><td>Article＋BreadcrumbList を自動出力。FAQブロックがある記事は FAQPage を追加</td></tr>
+      <tr><td>全体</td><td>エンジン互換</td><td>AI集客エンジンの生成記事は「本文＋FAQ＋メタ」のみ。CTA・講座ウィジェット・ピラーリンクは<mark>テンプレ側が自動挿入</mark>し、生成物に依存しない（エンジン側憲法：生成物に注意書き・販促枠を書かない、と整合）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>CTA出し分けマトリクス（カテゴリ → オファー）</h3>
+  <p>WordPressの記事カテゴリごとに「CTAセット」（④テキスト／⑦バナー／⑨メイン）を管理画面で割り当てる。<mark>マッピングは管理画面から編集可能にし、ハードコード禁止</mark>（要件定義 §05 運用要件）。初期セット：</p>
+  <div class="tbl"><table>
+    <thead><tr><th>記事カテゴリ</th><th>⑨記事末メインCTA（オファー）</th><th>⑦インラインCTA</th><th>⑧関連講座タグ</th></tr></thead>
+    <tbody>
+      <tr><td>ハラスメント／カスハラ</td><td>WP「業種別カスタマーハラスメント対応」（8月実績10DL/月の当たり資料）</td><td>ハラスメント研修LP（T6）</td><td>ハラスメント系講座</td></tr>
+      <tr><td>コンプライアンス</td><td>WP「コンプラ研修のやり方」＋コンプラ資料</td><td>コンプライアンス研修LP</td><td>コンプラ系講座</td></tr>
+      <tr><td>新入社員・若手・OJT</td><td>新入社員研修 資料（パック訴求）</td><td>新入社員研修LP</td><td>新人・ビジネスマナー講座</td></tr>
+      <tr><td>管理職・リーダー・マネジメント</td><td>管理職研修 資料</td><td>管理職研修LP</td><td>マネジメント系講座</td></tr>
+      <tr><td>情報セキュリティ</td><td>WP「標的型メール」（7月実績9DL）＋情シス向け資料</td><td>情報セキュリティ研修LP</td><td>セキュリティ講座</td></tr>
+      <tr><td>eラーニング一般（比較・おすすめ・とは）</td><td><strong>manebiがわかる資料3点セット</strong></td><td>料金ページ（/price/）バナー「1分で概算試算」</td><td>人気講座TOP3</td></tr>
+      <tr><td>その他・未分類</td><td>資料3点セット（デフォルト）</td><td>デフォルトバナー</td><td>人気講座TOP3</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>計測仕様（§08と連動）</h3>
+  <ul>
+    <li>全CTAクリックでGTMイベント <span class="u">cta_click</span> を送出。パラメータ：<span class="u">cta_type</span>（dl / demo / price / course）、<span class="u">cta_position</span>（lead / inline / sidebar / bottombar / end / footer）、<span class="u">article_category</span>、<span class="u">cta_creative</span>（オファーID）</li>
+    <li>KPIビュー：「コラム発CV」＝ランディング /column/* かつ セッション内 cv_* 発火。リニューアル前は定義上ほぼ0のため、公開初月から純増としてカウントできる</li>
+    <li>HubSpotフォーム側は参照元記事URL・オファーIDをhiddenで受け取り、<mark>kintoneのCV種別連携（§08）と突合可能にする</mark></li>
+  </ul>
+
+  <div class="callout blue">
+    <div class="ct">初速の出し方（実装順の提案）</div>
+    <p>T9はテンプレ改修だけで全公開記事に一括適用できるため、<strong>リニューアル本体を待たずに先行リリース可能</strong>。効果最大の適用先はセッション上位のハラスメント系記事（m-0021ほか）×「業種別カスハラWP」で、10/1のカスハラ法施行に向けた検索急増と重なる。<mark>9月中のT9先行公開を強く推奨</mark>。</p>
+  </div>
+
+  <h3>要確認事項（Phase 1で潰す）</h3>
+  <ol>
+    <li>既存URLの全棚卸し（研修4ページ・集合研修等の正確なパス）→ 新設URL案の確定</li>
+    <li>LMSログイン URL（受講者用／管理者用）→ ヘッダー・フッター・/login/ 案内ページに反映</li>
+    <li>記事の監修者体制（誰の名前と経歴を出すか。E-E-A-T・LLMOに直結）</li>
+    <li>ハラスメント研修LP（/training/harassment/）の10/1前公開可否 — エンジン第一クラスターの講座LP・記事群との内部リンク設計を島崎さんとすり合わせ</li>
+    <li>ヘッダーからTELを外すことの営業側合意</li>
+    <li>corpサイト→サービスサイトの全リンク棚卸し（v1.4・情報連続性）：/corp/service/manebi/ 等のCTA文言（機能・料金・活用事例）と遷移先を対応表にし、料金系文言は /price/ 公開後にリンク差し替え。corp側の変更は管轄確認のうえ依頼</li>
+    <li>Phase 0クイックウィン：現行サイトのキャンペーン枠「まずは自社の人数で試算をする(無料)」CTA → simulation-cp へ直リンク修正（リニューアルを待たない）</li>
+    <li>東証ロゴ（v1.3）：市場区分・証券コードの確定と、東証「上場会社ロゴ」使用規定の確認（申請要否・表示ルール）。corp・業界3サイトへの配置は各管轄へ依頼</li>
+    <li>Wonder AI・企業リブランディングの受けページ（既存LPの有無、無ければ概要＋問合せの軽量ページを新設するか）と、DXコンサル撤去の事業側確認</li>
+    <li>Prime（プライムコンサルタント）側の相互リンク調整：primec.co.jp のフッター/サービス欄から manebi 教育サービスへの返しリンク（先方サイト管轄と要調整）</li>
+  </ol>
+</section>
+
+<footer>
+  manebi.co.jp Phase 1 設計書 v1.0 — 親文書：リニューアル要件定義書 v1.3 ／ 根拠：GA4・SC・kintone/Slack実測（26年6-8月）、競合5社・参考5社実査
+</footer>
+</div>
+</body>
+</html>

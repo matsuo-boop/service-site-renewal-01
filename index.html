@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>manebi サービスサイト フルリニューアル｜ドキュメント</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#ffffff; --mist:#f4f7f9; --panel:#fafcfd; --line:#dde5ea;
+    --ink:#17242e; --ink2:#54636e; --ink3:#8695a0;
+    --blue:#1d9fd6; --blue-brand:#51d0ff; --blue-soft:#e8f7fe;
+    --yellow:#dced00; --yellow-soft:#f7fabf;
+    --purple:#7c78d8; --purple-soft:#eeedfb;
+    --warn:#a86b00; --warn-soft:#fff6e5;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+      --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+      --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+      --yellow:#d9e85a; --yellow-soft:#33370f;
+      --purple:#ada9f5; --purple-soft:#272544;
+      --warn:#e0a44a; --warn-soft:#332813;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+    --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+    --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+    --yellow:#d9e85a; --yellow-soft:#33370f;
+    --purple:#ada9f5; --purple-soft:#272544;
+    --warn:#e0a44a; --warn-soft:#332813;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    font-size:15px; line-height:1.9; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px; margin:0 auto; padding:64px 24px 110px}
+  a{color:var(--blue); text-decoration:none}
+  a:focus-visible{outline:2px solid var(--blue); outline-offset:3px; border-radius:4px}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--ink3); text-transform:uppercase}
+  h1{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:clamp(30px,5vw,44px);
+    line-height:1.42; margin:14px 0 10px; text-wrap:balance}
+  h1 .ast{color:var(--blue-brand)}
+  .sub{color:var(--ink2); max-width:44em; margin:0}
+  h2{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:20px; margin:0 0 4px}
+  h2::after{content:""; display:block; width:44px; height:4px; margin-top:10px; background:var(--yellow); border-radius:2px}
+  section{margin-top:56px}
+
+  .facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--panel); margin-top:30px}
+  .fact{padding:17px 21px; border-left:1px solid var(--line)}
+  .fact:first-child{border-left:none}
+  .fact .l{font-size:11.5px; color:var(--ink3); letter-spacing:.06em}
+  .fact .v{font-family:"Zen Old Mincho",serif; font-size:24px; font-weight:700; line-height:1.3; font-variant-numeric:tabular-nums}
+  .fact .v small{font-size:13px; font-weight:600; color:var(--ink2)}
+  .fact .n{font-size:12px; color:var(--ink2); line-height:1.6}
+
+  .docs{display:grid; gap:14px; margin-top:20px}
+  .doc{display:block; border:1px solid var(--line); border-radius:14px; padding:20px 24px;
+    background:var(--panel); transition:border-color .15s, transform .15s}
+  .doc:hover{border-color:var(--blue); transform:translateY(-2px)}
+  .doc .no{font-family:var(--mono); font-size:11.5px; color:var(--blue); letter-spacing:.14em}
+  .doc h3{font-family:"Zen Old Mincho",serif; font-size:20px; font-weight:700; margin:5px 0 7px; color:var(--ink)}
+  .doc p{margin:0; font-size:13.5px; color:var(--ink2); line-height:1.75}
+  .doc .ver{display:inline-block; font-family:var(--mono); font-size:10.5px; color:var(--ink3);
+    border:1px solid var(--line); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:3px}
+
+  .note{border:1px solid color-mix(in srgb,var(--warn) 32%,var(--line)); background:var(--warn-soft);
+    border-radius:12px; padding:15px 20px; margin-top:22px; font-size:13.5px; line-height:1.8}
+  .note b{color:var(--warn)}
+
+  ul{padding-left:1.3em; max-width:47em}
+  li{margin:7px 0; font-size:14px}
+  .phases{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px}
+  .phases th,.phases td{text-align:left; padding:9px 12px; border-top:1px solid var(--line); vertical-align:top}
+  .phases thead th{border-top:none; font-size:11.5px; color:var(--ink2); letter-spacing:.05em; background:var(--mist)}
+  .phases td:first-child{font-family:var(--mono); font-size:12px; white-space:nowrap; color:var(--blue)}
+  .tblwrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--panel)}
+  footer{margin-top:76px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink3)}
+  footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Project Documentation</div>
+  <h1>manebi サービスサイト<br>フルリニューアル<span class="ast">*</span></h1>
+  <p class="sub">「集客するサイト」と「売るサイト」を接続し、CVが最も取りやすいサービスサイトへ。設計までを内製で行い、外部制作会社には最終制作のみを依頼できる粒度でドキュメントを整備しています。</p>
+
+  <div class="facts">
+    <div class="fact">
+      <div class="l">KGI（月間CV）</div>
+      <div class="v">375<small> 件/月</small></div>
+      <div class="n">現状比110%（現状 約350件）</div>
+    </div>
+    <div class="fact">
+      <div class="l">最重要CV</div>
+      <div class="v" style="font-size:19px">資料ダウンロード</div>
+      <div class="n">量と質のバランスが最良</div>
+    </div>
+    <div class="fact">
+      <div class="l">体制</div>
+      <div class="v" style="font-size:19px">設計は内製</div>
+      <div class="n">外注は最終制作のみ</div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <h2>ドキュメント</h2>
+  <div class="docs">
+    <a class="doc" href="requirements/">
+      <div class="no">01</div>
+      <h3>要件定義書<span class="ver">v1.6</span></h3>
+      <p>目的とKGI／GA4・Search Console・kintoneの実測に基づく現状分析／競合5社と参考B2Bサイト5社の実査／情報設計と新サイトマップ／テンプレート別要件（T1〜T14）／SEO要件／CTA・マイクロコピー体系／計測設計／AI集客エンジン互換要件／内外製の切り分け</p>
+    </a>
+    <a class="doc" href="phase1-design/">
+      <div class="no">02</div>
+      <h3>Phase 1 設計書<span class="ver">v1.3</span></h3>
+      <p>新グローバルナビの全リンク定義（URL・新設/既存の別・受けKW付き）／ペルソナ別フッター／表記変更一覧／T9コラム記事テンプレートのワイヤーフレーム・CTA出し分けマトリクス・計測仕様</p>
+    </a>
+    <a class="doc" href="research/">
+      <div class="no">03</div>
+      <h3>調査：脱WordPressとSEO</h3>
+      <p>26ソース・242論点を検証。CMSの種類はランキング要因かという事実確認／AIにソースを書かせた実在サイト4件／移行で順位が落ちる実際の原因／非エンジニアの更新運用は成立するか／AI生成コード特有のリスク</p>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>主要な決定事項</h2>
+  <ul>
+    <li><b>WordPressは継続する。</b>CMSの種類はGoogleのランキング要因ではないため脱WordPressにSEO上の利得はなく、一方でAI集客エンジンの入稿経路・非エンジニアの更新運用・LLMO対策との整合という3つのコストが発生するため。ただし<b>テーマ実装にはAIコーディングを使う</b></li>
+    <li>ページビルダー系プラグインは採用しない（独自構文でAIエージェントが操作できないため）</li>
+    <li>eラーニングセクションはマイクロサイト化しない。1ドメイン1サイトで旗艦セクション＋専用ローカルナビとする</li>
+    <li>業界特化3サイト（派遣・警備・建設）は、本リニューアルでは本体に業界別LPを新設して相互導線を張るまで。ドメイン統合はデータを見てPhase 4以降に判断</li>
+    <li>サービスメニューは3グループ構成（経営・組織／人材開発・教育／業界向け）。DXコンサルは撤去</li>
+    <li>「お客様の声」は静的掲載とする（LMS側での自動収集はスコープ外・将来拡張）</li>
+    <li>動的な数値（教材数・導入社数・料金など）はハードコード禁止。管理画面で一元管理し全ページへ自動反映</li>
+  </ul>
+</section>
+
+<section>
+  <h2>フェーズ</h2>
+  <div class="tblwrap">
+  <table class="phases">
+    <thead><tr><th>フェーズ</th><th>内容</th><th>担当</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 0</td><td>GA4計測分離／kintone CV種別連携／業界3サイトへのCV計測導入／要件定義の確定</td><td>内製</td></tr>
+      <tr><td>Phase 1</td><td>IA確定・ワイヤーフレーム・コピー骨子・KWマッピング確定</td><td>内製</td></tr>
+      <tr><td>Phase 2</td><td>ビジュアルデザイン・WPテーマ実装・シミュレーター実装・HubSpot連携</td><td>外注候補</td></tr>
+      <tr><td>Phase 3</td><td>コンテンツ移行・テンプレ量産・コラムCTA全記事適用・公開</td><td>内製＋AI集客エンジン</td></tr>
+      <tr><td>Phase 4</td><td>効果検証・リライト運用の仕組み化・ABテスト</td><td>内製</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <b>公開時の安全装置</b> — 既存URL・月間1.6〜2万セッションの資産を毀損しないため、①段階リリース（一度に1つだけ変える）②URL温存を第一原則 ③公開前チェックリスト（staging用noindexの解除ほか6項目）④ロールバック基準の事前設定 ⑤AI生成コードのレビュー工程、を必須とします。詳細は<a href="research/">調査レポート</a>末尾。
+  </div>
+</section>
+
+<footer>
+  社内資料（マーケティング部 松尾）／
+  <a href="https://github.com/matsuo-boop/service-site-renewal-01">GitHub リポジトリ</a>
+  Markdown版・変更履歴はリポジトリの <code>docs/</code> を参照してください。
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>manebi.co.jp リニューアル要件定義書｜manebi サービスサイト リニューアル</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#ffffff; --mist:#f4f7f9; --panel:#fafcfd; --line:#dde5ea;
+    --ink:#17242e; --ink2:#54636e; --ink3:#8695a0;
+    --blue:#1d9fd6; --blue-brand:#51d0ff; --blue-soft:#e8f7fe;
+    --yellow:#dced00; --yellow-soft:#f7fabf;
+    --purple:#7c78d8; --purple-soft:#eeedfb;
+    --good:#0f7a52; --warn:#a86b00; --bad:#c0392f;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+      --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+      --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+      --yellow:#d9e85a; --yellow-soft:#33370f;
+      --purple:#ada9f5; --purple-soft:#272544;
+      --good:#4ecf9a; --warn:#e0a44a; --bad:#ff8577;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+    --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+    --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+    --yellow:#d9e85a; --yellow-soft:#33370f;
+    --purple:#ada9f5; --purple-soft:#272544;
+    --good:#4ecf9a; --warn:#e0a44a; --bad:#ff8577;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    font-size:15px; line-height:1.9; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:56px 24px 120px}
+  a{color:var(--blue); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--blue) 40%,transparent)}
+  a:hover{border-bottom-color:var(--blue)}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+
+  /* ---- cover ---- */
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--ink3); text-transform:uppercase}
+  h1{
+    font-family:"Zen Old Mincho",serif; font-weight:700; font-size:clamp(30px,5vw,44px);
+    line-height:1.4; margin:14px 0 6px; text-wrap:balance;
+  }
+  h1 .ast{color:var(--blue-brand); font-family:"Zen Old Mincho",serif}
+  .cover-sub{color:var(--ink2); max-width:44em}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:22px; font-size:13px; color:var(--ink2)}
+  .meta b{color:var(--ink); font-weight:500}
+  .kgi-band{
+    margin-top:34px; border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); background:var(--panel);
+  }
+  .kgi{padding:18px 22px; border-left:1px solid var(--line)}
+  .kgi:first-child{border-left:none}
+  .kgi .lbl{font-size:11.5px; color:var(--ink3); letter-spacing:.06em}
+  .kgi .val{font-family:"Zen Old Mincho",serif; font-size:26px; font-weight:700; line-height:1.3; font-variant-numeric:tabular-nums}
+  .kgi .val small{font-size:14px; font-weight:600; color:var(--ink2)}
+  .kgi .note{font-size:12px; color:var(--ink2); line-height:1.6}
+
+  /* ---- toc ---- */
+  nav.toc{margin:44px 0 0; padding:22px 26px; background:var(--mist); border-radius:14px}
+  nav.toc .t{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; color:var(--ink3); margin-bottom:10px}
+  nav.toc ol{margin:0; padding:0; list-style:none; columns:2; column-gap:36px; font-size:13.5px}
+  nav.toc li{margin:4px 0; break-inside:avoid}
+  nav.toc a{color:var(--ink); border-bottom:none}
+  nav.toc a:hover{color:var(--blue)}
+  nav.toc .no{font-family:var(--mono); font-size:11px; color:var(--blue); margin-right:8px}
+  @media (max-width:620px){ nav.toc ol{columns:1} }
+
+  /* ---- sections ---- */
+  section{margin-top:72px}
+  h2{
+    font-family:"Zen Old Mincho",serif; font-weight:700; font-size:26px; line-height:1.45;
+    margin:0 0 6px; text-wrap:balance; scroll-margin-top:24px;
+  }
+  h2 .no{font-family:var(--mono); font-weight:500; font-size:13px; color:var(--blue); display:block; letter-spacing:.14em; margin-bottom:6px}
+  h2::after{content:""; display:block; width:52px; height:4px; margin-top:12px; background:var(--yellow); border-radius:2px}
+  h3{font-size:16.5px; font-weight:700; margin:34px 0 10px}
+  h3::before{content:"* "; color:var(--blue-brand); font-family:"Zen Old Mincho",serif; font-weight:700}
+  h4{font-size:14.5px; font-weight:700; margin:22px 0 6px; color:var(--ink)}
+  p{margin:10px 0; max-width:46em}
+  ul,ol{margin:10px 0; padding-left:1.5em; max-width:46em}
+  li{margin:5px 0}
+  .lead{color:var(--ink2); font-size:14.5px; max-width:46em}
+  mark{background:linear-gradient(transparent 62%, var(--yellow-soft) 62%); color:inherit; padding:0 2px}
+  strong{font-weight:700}
+  .muted{color:var(--ink3)}
+  .small{font-size:13px}
+
+  /* ---- callouts / chips ---- */
+  .callout{
+    border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin:18px 0;
+    background:var(--panel); max-width:none;
+  }
+  .callout.blue{background:var(--blue-soft); border-color:color-mix(in srgb,var(--blue) 25%,var(--line))}
+  .callout.purple{background:var(--purple-soft); border-color:color-mix(in srgb,var(--purple) 25%,var(--line))}
+  .callout .ct{font-size:12px; font-weight:700; letter-spacing:.08em; margin-bottom:6px; color:var(--blue)}
+  .callout.purple .ct{color:var(--purple)}
+  .callout p{max-width:none}
+  .chip{
+    display:inline-block; font-size:11px; font-weight:500; border-radius:999px; padding:2px 10px;
+    background:var(--purple-soft); color:var(--purple); margin-right:6px; vertical-align:2px; white-space:nowrap;
+  }
+  .chip.b{background:var(--blue-soft); color:var(--blue)}
+  .chip.y{background:var(--yellow-soft); color:var(--warn)}
+  .pri{font-family:var(--mono); font-size:11px; letter-spacing:.06em; white-space:nowrap}
+  .pri.p1{color:var(--bad)} .pri.p2{color:var(--warn)} .pri.p3{color:var(--ink3)}
+
+  /* ---- tables ---- */
+  .tbl{overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:16px 0; background:var(--panel)}
+  table{border-collapse:collapse; width:100%; font-size:13px; line-height:1.65}
+  th,td{padding:9px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line)}
+  thead th{border-top:none; background:var(--mist); font-size:11.5px; letter-spacing:.05em; color:var(--ink2); white-space:nowrap}
+  td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+  td .u{font-family:var(--mono); font-size:12px}
+  tr.hl td{background:var(--yellow-soft)}
+
+  .kv{display:grid; grid-template-columns:minmax(120px,180px) 1fr; gap:6px 18px; font-size:13.5px; margin:12px 0; max-width:none}
+  .kv dt{color:var(--ink2); font-weight:500}
+  .kv dd{margin:0}
+
+  /* ---- nav tree ---- */
+  .tree{
+    font-family:var(--mono); font-size:12.5px; line-height:2; background:var(--mist);
+    border-radius:12px; padding:18px 22px; overflow-x:auto; white-space:pre;
+  }
+  .tree b{color:var(--blue); font-weight:500}
+  .tree .new{color:var(--good)}
+  .tree .cms{color:var(--purple)}
+
+  footer{margin-top:90px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink3)}
+  @media print{ .wrap{padding:0} nav.toc{break-inside:avoid} section{margin-top:44px} }
+
+  .sitenav{position:sticky; top:0; z-index:99; background:color-mix(in srgb,var(--paper) 90%,transparent);
+    backdrop-filter:saturate(150%) blur(10px); border-bottom:1px solid var(--line)}
+  .sitenav-in{max-width:900px; margin:0 auto; padding:10px 24px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .sitenav a{font-size:12.5px; color:var(--ink2); border-bottom:none; white-space:nowrap}
+  .sitenav a:hover{color:var(--blue)}
+  .sitenav a.home{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:14px; color:var(--ink)}
+  .sitenav a.on{color:var(--blue); font-weight:700}
+  .sitenav .sp{flex:1}
+  @media print{ .sitenav{display:none} }
+</style>
+</head>
+<body>
+<nav class="sitenav"><div class="sitenav-in"><a class="home" href="../">manebi リニューアル<span style="color:var(--blue-brand)">*</span></a><a class="on" href="../requirements/">要件定義書</a><a  href="../phase1-design/">Phase 1 設計書</a><a  href="../research/">調査レポート</a><span class="sp"></span><a href="https://github.com/matsuo-boop/service-site-renewal-01">GitHub &#8599;</a></div></nav>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Requirement Definition &nbsp;/&nbsp; v1.6 draft</div>
+  <h1>manebi.co.jp<br>サービスサイト フルリニューアル<span class="ast">*</span><br>要件定義書</h1>
+  <p class="cover-sub">「集客するサイト」と「売るサイト」を接続し、CVが最も取りやすいサービスサイトへ。設計は内製、制作のみ外注可能な粒度で定義する。</p>
+  <div class="meta">
+    <span>作成：<b>マーケティング部 松尾</b>（ドラフト作成支援：Claude）</span>
+    <span>作成日：<b>2026-09-01</b>（v1.6 09-09更新）</span>
+    <span>ステータス：<b>v1.6 サービス3グループ化・東証ロゴ・Prime相互リンク</b></span>
+  </div>
+
+  <div class="kgi-band">
+    <div class="kgi">
+      <div class="lbl">KGI（月間CV）</div>
+      <div class="val">375<small> 件/月</small></div>
+      <div class="note">現状比110%（現状 約350件/月）</div>
+    </div>
+    <div class="kgi">
+      <div class="lbl">最重要CV</div>
+      <div class="val" style="font-size:20px">資料ダウンロード</div>
+      <div class="note">量と質のバランスが最良のCVポイント</div>
+    </div>
+    <div class="kgi">
+      <div class="lbl">体制</div>
+      <div class="val" style="font-size:20px">設計内製</div>
+      <div class="note">外注は最終制作のみ。本書がそのまま制作指示書の親となる</div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="t">CONTENTS</div>
+  <ol>
+    <li><span class="no">01</span><a href="#s1">目的とKGI</a></li>
+    <li><span class="no">02</span><a href="#s2">現状分析（データ）</a></li>
+    <li><span class="no">03</span><a href="#s3">競合・参考サイト分析</a></li>
+    <li><span class="no">04</span><a href="#s4">情報設計（IA）・新サイトマップ</a></li>
+    <li><span class="no">05</span><a href="#s5">ページ別要件（テンプレート単位）</a></li>
+    <li><span class="no">06</span><a href="#s6">SEO要件</a></li>
+    <li><span class="no">07</span><a href="#s7">CTA・マイクロコピー体系</a></li>
+    <li><span class="no">08</span><a href="#s8">計測設計（GA4 / HubSpot）</a></li>
+    <li><span class="no">09</span><a href="#s9">AI集客エンジン互換要件</a></li>
+    <li><span class="no">10</span><a href="#s10">進め方・内外製の切り分け</a></li>
+    <li><span class="no">--</span><a href="#open">未決事項（要判断）</a></li>
+  </ol>
+</nav>
+
+<!-- ================================================================ -->
+<section id="s1">
+  <h2><span class="no">01</span>目的とKGI</h2>
+  <p class="lead">本リニューアルの目的は見た目の刷新ではなく、<mark>CV（特に資料DL）が構造的に生まれるサイトへの再設計</mark>である。トンマナ統一はその手段の一つとして同時に行う。</p>
+
+  <h3>目標</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>指標</th><th>現状（26年6-8月平均）</th><th>目標</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>月間CV合計</td><td class="num">約350件</td><td class="num"><strong>375件（+10%）</strong></td><td>4CVの内訳目標は §08 の計測分離後に設定</td></tr>
+      <tr><td>最重要CV</td><td colspan="2">資料ダウンロード</td><td>検討初期〜後期まで受けられる資料ラインナップを拡充（§07）</td></tr>
+      <tr><td>コラム経由CV</td><td class="num"><strong>0件</strong></td><td class="num">新設KPI</td><td>現状最大の構造的損失。§05 T9で対処</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>基本方針（優先順位）</h3>
+  <ol>
+    <li><strong>コラム→CVの接続</strong> — 流入の過半が着地するコラムからCV導線を張る</li>
+    <li><strong>商用KWページの新設</strong> — 料金・機能・比較・課題別など「買う気のある人」の受け皿</li>
+    <li><strong>IA・グロナビ再設計</strong> — 検討プロセスに沿った情報設計</li>
+    <li><strong>トンマナ統一</strong> — corpサイト（manebi.co.jp/corp/）の世界観に統一。紫単色の旧トンマナは廃止</li>
+  </ol>
+
+  <div class="callout blue">
+    <div class="ct">設計原則：流入元別の情報連続性（v1.4追加）</div>
+    <p>比較サイト・コーポレートサイト・広告LP・検索——<strong>どの流入元から来ても、直前に見ていた情報の続きがサイトで完結する</strong>状態を作る。比較サイト経由の検討者は各社を見比べた上で指名で戻ってくるため（比較サイト経由リードはアイミツ68・ITトレンド30・BOXIL28・ミツモア29／3ヶ月＝kintone実測）、<mark>比較サイトに載せている料金・スペック情報と同等以上を本体サイトでも公開し、情報の非対称を解消する</mark>。流入元→期待情報→受けページの対応は §04 のマップに定義。</p>
+  </div>
+
+  <div class="callout blue">
+    <div class="ct">設計原則：「4つの不」への回答としてのサイト</div>
+    <p>既存の営業フレームワーク「4つの不」をサイト全体の設計原則に採用する。<strong>不信</strong>（この会社は信頼できる？→実績・事例・受講者の声・セキュリティ）／<strong>不要</strong>（本当に必要？→定量・定性メリット）／<strong>不適</strong>（自社にベスト？→比較表・業界別ページ）／<strong>不急</strong>（今やるべき？→放置リスク・法改正/施行日訴求）。各ページがどの「不」に答えるかを §05 で明記する。</p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="s2">
+  <h2><span class="no">02</span>現状分析（データ）</h2>
+  <p class="lead">GA4（property 442056267）・Search Console・SEO対策KW管理シートの実データに基づく。期間は主に2026年6〜8月。</p>
+
+  <h3>ボトルネック①：コラム流入がCVゼロ</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>ランディング</th><th class="num">セッション</th><th class="num">CV</th><th class="num">CVR</th><th class="num">直帰率</th></tr></thead>
+    <tbody>
+      <tr><td>TOP <span class="u">/</span></td><td class="num">9,517</td><td class="num">218</td><td class="num">2.3%</td><td class="num">42%</td></tr>
+      <tr><td>広告LP <span class="u">/std_03h</span></td><td class="num">8,212</td><td class="num">123</td><td class="num">1.5%</td><td class="num">59%</td></tr>
+      <tr class="hl"><td>コラム上位10記事 合計</td><td class="num">約20,000</td><td class="num"><strong>0</strong></td><td class="num"><strong>0%</strong></td><td class="num">88〜94%</td></tr>
+      <tr><td><span class="u">/service/e-learning</span></td><td class="num">1,772</td><td class="num">69</td><td class="num"><strong>3.9%</strong></td><td class="num">38%</td></tr>
+      <tr><td><span class="u">/contact</span>（直接流入）</td><td class="num">577</td><td class="num">113</td><td class="num">19.6%</td><td class="num">53%</td></tr>
+    </tbody>
+  </table></div>
+  <p>サイトの非指名流入の大半を稼ぐコラムが、CVに1件も接続していない。<mark>ここが本リニューアル最大の改善余地</mark>。なお /service/e-learning はCVR 3.9%と最良で、「サービスを理解した人は転換する」ことの証左。問題は理解に至る動線が無いこと。</p>
+
+  <h3>ボトルネック②：商用KWの受け皿不在・順位崩落</h3>
+  <ul>
+    <li>クリック上位クエリは「パワハラ 定義」「スローガン例」等の<strong>情報クエリと指名のみ</strong>。商用KWは上位にほぼ皆無</li>
+    <li>ビッグKW「e ラーニング」（月間検索74,000）は表示LPが /service/e-learning/ だが<strong>順位がほぼ付いたことがない</strong>。対策34KWのうち約半数が全期間圏外</li>
+    <li>商用KWの受け皿が<strong>コラム記事に集中</strong>（t-033・t-014・t-059・t-063）。「eラーニング おすすめ」は26年7/1に1位到達後、7/8以降圏外。t-033/t-014系のKW群が7月上旬を境にまとまって下落</li>
+    <li>サイト全体セッションも減少傾向：23,348（25年10月）→ 16,630（26年7月）。情報系クエリ（スローガン例・研修 感想等）の減衰が主因で、<strong>非商用トラフィック依存が崩れつつある</strong></li>
+    <li>「パワハラとは」は表示8.6万回・9位・CTR 0.3% — Title/構成改善だけで拾える余地大</li>
+  </ul>
+
+  <h3>その他の事実</h3>
+  <ul>
+    <li>「manebi ログイン」系クエリで3ヶ月に約960クリック — <strong>受講者がサービスサイトへ大量流入</strong>。ナビに受講者導線が必要（§04）</li>
+    <li>GA4キーイベントが <span class="u">CV_資料DLor問合せor体験</span> の1本のみで、CV種別の効果検証が不可能（§08で是正）</li>
+    <li>月6記事のリライト運用（15位→8位が最コスパ等の基準）が既に存在。§06でこの運用を仕組み化する</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section id="s3">
+  <h2><span class="no">03</span>競合・参考サイト分析</h2>
+  <p class="lead">競合5社（インソース／Schoo／AirCourse／learningBOX／Smart Boarding）と参考B2Bサイト5社（カオナビ／SmartHR／タレントパレット／セールスマーカー／Loglass）を実査（2026-09-01）。</p>
+
+  <h3>manebiが競合より弱い部分（優先度順）</h3>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>弱点</th><th>競合の状況</th></tr></thead>
+    <tbody>
+      <tr><td class="pri p1">P1</td><td><strong>料金ページが本体に無い</strong></td><td>5社中4社が本体に料金ページ。Schoo・AirCourse・learningBOX・インソースLeafは金額まで全公開。インソースLeafは1ID 500円・初期10万円とmanebiと同構造を公開しており、<mark>非公開に競争優位はない</mark></td></tr>
+      <tr><td class="pri p1">P1</td><td><strong>機能一覧ページが無い</strong></td><td>全5社が保有（learningBOXは18下層）。「LMS 機能」「eラーニングシステム 比較」検討層の土俵に乗れていない</td></tr>
+      <tr><td class="pri p1">P1</td><td><strong>BOFU向けCTA導線が無い</strong></td><td>Schoo「料金表をダウンロード」、Smart Boarding「この見積もりプランで相談する」等、価格を知りたい意図に直接応えるCTAを全ページ反復</td></tr>
+      <tr><td class="pri p1">P1</td><td><strong>事例が探せない・成果数値が薄い</strong></td><td>SmartHRは業種×規模×課題×機能×地域の5軸フィルタ。競合事例は「受講率65%→9割」型の数値見出し。導入6,900社の資産が未活用</td></tr>
+      <tr><td class="pri p2">P2</td><td>課題別・階層別・業界別LPが無い</td><td>インソースは階層×業界×テーマのマトリクスで数千ページ。Schooは研修パッケージ30種超</td></tr>
+      <tr><td class="pri p2">P2</td><td>セキュリティ専用ページが無い</td><td>情シス稟議の必須要件。競合は認証番号まで明記</td></tr>
+      <tr><td class="pri p2">P2</td><td>比較コンテンツを自社ドメインに持たない</td><td>AirCourseは「10社比較」記事群、SBは「徹底比較表つき資料」でリード化</td></tr>
+      <tr><td class="pri p2">P2</td><td>不安払拭マイクロコピー・反論処理FAQの不在</td><td>Schooは「決裁者にどう説明すればいい？」FAQ＋助成金案内まで実装</td></tr>
+      <tr><td class="pri p3">P3</td><td>信頼要素の数値化・出典表記が弱い</td><td>競合はNo.1・継続率に必ず調査出典と時点を付記（景表法対応の観点でも必須）</td></tr>
+      <tr><td class="pri p3">P3</td><td>グロナビが検討プロセス非対応</td><td>「料金」「機能」「選ばれる理由」というBOFU 3大導線がナビに無い</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>manebiの勝ち筋（競合実査から逆算した強み）</h3>
+  <ul>
+    <li><strong>価格構造</strong>：1ID 500円〜・使わない月は調整可 — 公開すれば AirCourse型の透明性訴求で戦える</li>
+    <li><strong>無料デモの即時性</strong>：申込後最速30分でID発行し実環境を触れる。競合は「日程調整→営業同席デモ」が主流で、<mark>この即時性はCTA文言として突き抜ける</mark>（§07）</li>
+    <li><strong>AI機能の先行</strong>：競合のAI訴求は発展途上。「manebi＝AIに強い」の独立ページで先行優位を取れる</li>
+    <li><strong>導入6,900社×継続率98.8%</strong>：数はあるのに見せ方の問題。事例DB化＋出典付きバッジで即戦力化</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section id="s4">
+  <h2><span class="no">04</span>情報設計（IA）・新サイトマップ</h2>
+  <p class="lead">年明けの制作会社壁打ちで作成した「松プラン」サイトマップをベースに、競合分析の結果（BOFU 3導線のナビ昇格）と受講者導線を加えて再構成する。</p>
+
+  <h3>新グローバルナビ（案）</h3>
+  <div class="tree"><b>manebi</b>（ロゴ）
+├ サービス            ▾ <span class="new">【経営・組織】Wonder AI / 企業リブランディング / 人事評価(グループ会社Prime↗)</span>
+│                      【教育】eラーニング / 集合研修　【業界向け】派遣・警備・建設
+│                      ※DXコンサルは撤去（v1.6）
+├ <span class="new">機能</span>               ▾ <span class="new">機能一覧</span> / <span class="new">AI機能(特化P)</span> / <span class="new">セキュリティ</span> / <span class="new">システム連携</span>
+├ <span class="new">料金</span>               … 料金・プラン＋見積シミュレーター統合（simulation-cp移植）
+├ <span class="new">教材・研修</span>          ▾ <span class="new">🖥 eラーニング教材</span>（教材・講座一覧＝owned／人気講座）
+│                      <span class="new">👥 集合研修</span>（<span class="new">ラインナップ一覧(T14)</span>／講師派遣／組み合わせ事例）
+│                      <span class="cms">テーマから探す</span>（新入社員/管理職/ハラスメント/コンプラ…＝形態横断ハブ）※CMS量産
+├ 導入事例            … <span class="new">業界×規模×課題フィルタ</span>
+├ お役立ち            ▾ 資料ダウンロード / コラム / セミナー / <span class="new">FAQ</span>
+│
+├ <span class="new">受講者の方はこちら（ログイン）</span>   ← 3ヶ月960クリックの受け皿
+└ [資料DL] [無料デモ]  ← ヘッダー固定CTA 2本</div>
+  <p class="small muted">緑＝新設、紫＝CMSテンプレで量産するページ群。「お役立ち記事」は「コラム」へ表記変更（他の表記も §05 各テンプレで定義）。</p>
+
+  <h3>設計の根拠</h3>
+  <ul>
+    <li><strong>「サービス」と「研修ラインナップ」の役割重複を解消</strong>：サービス＝提供形態（何で学ぶか）、研修テーマ＝中身（何を学ぶか）に再定義。研修テーマは現在の4メニューから<mark>階層別×テーマ別で20本規模に拡張</mark>し、SEO受け皿を兼ねる（§06）</li>
+    <li><strong>BOFU 3導線（料金・機能・事例）をナビ第一階層に</strong>：検討プロセス対応（AirCourse型）</li>
+    <li><strong>業界特化（派遣・警備・建設）をフッターからナビへ昇格</strong>：外部サイトへの分散も将来的に集約検討（未決事項）</li>
+    <li><strong>フッターはペルソナ別3ブロック再編</strong>（SmartHR型）：導入検討中の方／ご利用中の方／パートナー</li>
+  </ul>
+
+  <h3>流入元別の情報連続性マップ（v1.4）</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>流入元</th><th>直前に見ている情報・期待</th><th>受けページ／施策</th></tr></thead>
+    <tbody>
+      <tr><td><strong>比較サイト</strong>（BOXIL・ITトレンド・アイミツ・ミツモア等）</td><td>各社の料金・機能・口コミを横並びで見比べた状態。「本体サイトに料金が無い」と情報が後退し離脱</td><td>T2料金（金額公開）・T3機能・T13比較・数字実績。比較サイト掲載スペックと本体の記載を<mark>定期突合する運用</mark>（比較サイト側の掲載情報もマーケが台帳管理）</td></tr>
+      <tr><td><strong>コーポレートサイト</strong>（/corp/service/manebi/ 等）</td><td>会社・サービス概要を見て「機能・料金・活用事例」CTAをクリック。<mark>現状、遷移先に料金プランが無い</mark></td><td>corp側の全リンク文言×遷移先ページを棚卸しし、文言が予告する情報（料金→/price/、機能→/function/、事例→/case/）へ差し替え。Phase 1タスク</td></tr>
+      <tr><td><strong>広告LP</strong>（/std_03h等）</td><td>単一訴求のLPで興味喚起済み。詳細（料金・教材・事例）を確かめたい</td><td>LP→本体（料金・事例・教材）への回遊導線を明示。キャンペーン枠の試算CTAは<mark>シミュレーターへ直リンク</mark>（Phase 0クイックウィン）</td></tr>
+      <tr><td><strong>検索（コラム着地）</strong></td><td>情報収集段階。売り込みへの耐性が低い</td><td>T9の段階的CTA（テキスト→バナー→記事末）＋ピラー誘導で検討段階を引き上げ</td></tr>
+      <tr><td><strong>指名検索（受講者）</strong></td><td>ログインしたいだけ</td><td>ヘッダー「受講者ログイン」＋ /login/ 案内ページで即退避</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">あわせて全主要ページに<strong>「こんな企業さまに向いています」適合ガイドブロック</strong>を設ける（利用実績ベース：業種比率・規模・利用用途から「製造業で新人教育を内製化したい」等の適合パターンを明示。向かないケースにも軽く触れて誠実さを担保＝「不信」対応・失敗あるあるとの整合）。掲載先：T1・T2・T6・T7。</p>
+
+  <div class="callout purple">
+    <div class="ct">既存URLの扱い（憲法）</div>
+    <p>既存URL・月間3.7万セッションは無傷のまま増築する（AI集客エンジン側の運用原則と同一）。<strong>URL変更は原則行わず</strong>、やむを得ない場合は301リダイレクト計画を作成し、エンジン側（カニバリ判定・内部リンク）へ事前通知する。§09参照。</p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="s5">
+  <h2><span class="no">05</span>ページ別要件（テンプレート単位）</h2>
+  <p class="lead">制作・実装はテンプレート単位で発注する。各テンプレに「答える不」と「主要参照パターン」を明記。</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>ID</th><th>テンプレート</th><th>優先</th><th>主要要件</th></tr></thead>
+    <tbody>
+      <tr><td>T1</td><td><strong>TOP</strong><br><span class="chip">不信</span><span class="chip">不要</span></td><td class="pri p1">P1</td><td>壁打ちシートのPhase1〜4構成（FV→失敗あるある→使いやすさ→教材→連携→事例→サポート→セキュリティ→ROI→導入フロー→FAQ→最終CTA）を採用。FVはコピー＋<mark>出典・時点付き実績バッジ帯</mark>（導入6,900社/継続率98.8%/受講回数）＋CTA2本を1画面に収める（SmartHR型）。FV直下に「はじめて導入／乗り換え検討」のセグメント分岐タブ（セールスマーカー型）。<strong>値引きバナー（78%OFF）はFVから撤去</strong>（キャンペーン自体10月末終了・撤去確定済み）。キャンペーン枠は管理画面からON/OFFできる汎用バナー枠として設計。実績セクションに「こんな企業さまに向いています」適合ガイド（§04）を併置。サービスラインアップ帯は<mark>「🖥eラーニング × 👥集合研修 × 組み合わせ（ハイブリッド）」の3択構造図</mark>で「両方できる」を一目で伝える（v1.5）。その上段に<mark>「経営・組織づくり（Wonder AI／リブランディング／人事評価=Prime）→ 人材開発・教育」のファネル構造</mark>を置き、「上流から教育まで一気通貫」を訴求（v1.6・壁打ちシートID13 Storyの回収）</td></tr>
+      <tr><td>T2</td><td><strong>料金・プラン</strong><br><span class="chip">不適</span><span class="chip">不急</span></td><td class="pri p1">P1</td><td>新設。金額を全公開（1ID 500円〜・Min 19,800円/月・初期10万円）。simulation-cpの<mark>見積シミュレーターを統合</mark>し、試算結果（人数・プラン）をHubSpotフォームへ引き継いでそのままリード化。「月額に含まれるもの vs 他社で発生しがちな追加費用」表（Schoo型）＋料金FAQ10問＋他社比較表。ネトフリ級にシンプルな「使わない月は減らせる」ビジュアル。<mark>比較サイト掲載の料金・スペックと同等以上の情報量にする</mark>（情報連続性・§01）＋「こんな企業さまに向いています」適合ガイド</td></tr>
+      <tr><td>T3</td><td><strong>機能一覧＋AI特化</strong><br><span class="chip">不適</span></td><td class="pri p1">P1</td><td>新設。カテゴリ別機能一覧（受講管理/コース作成/AI/レポート/多言語/API・カオナビ等連携）＋機能○×比較表。AI機能は独立ページで「manebi＝AIに強い」を人とAI（LLMO）に認識させる</td></tr>
+      <tr><td>T4</td><td><strong>セキュリティ</strong><br><span class="chip">不信</span></td><td class="pri p1">P1</td><td>新設。ISMS・Pマーク（認証番号・取得日付き）、SSO/IP制限/二段階認証、データ保管場所（国内DC）、SLA目標99.9%。情シス配布用PDF（チェックシート回答集）をDL資料化 → 資料DL CVにも寄与</td></tr>
+      <tr><td>T5</td><td><strong>導入事例 一覧/詳細</strong><br><span class="chip">不信</span><span class="chip">不適</span></td><td class="pri p1">P1</td><td>業界×従業員規模×課題×利用サービスの複合フィルタ（SmartHR/カオナビ型）。事例タイトルは<mark>成果数値入りに統一</mark>（「研修コスト300万円削減」等、既存の稟議資料に素材あり）。数値最強の4件をトップ・一覧冒頭に固定。業界別インデックス（/case/industry/◯◯/）をSEO受け皿に。<strong>営業も熱望していた業界別事例はここで実現</strong></td></tr>
+      <tr><td>T6</td><td><strong>研修テーマLP（階層別/テーマ別）</strong><br><span class="chip">不要</span><span class="chip">不急</span><span class="chip b">CMS</span></td><td class="pri p1">P1</td><td>CMS化して20本規模で量産。<mark>提供形態横断のハブ</mark>：対応形態バッジ（🖥eラーニング/👥集合研修）を統一表示し、「eラーニングで学ぶ（owned講座→T8）」「集合研修で実施する（→T14）」「組み合わせる（ハイブリッド事例）」の3ブロック構成。＋痛点列挙→manebiでできる3ポイント→定量成果付き事例→資料DL/デモ2択CTA（カオナビ/scene/型）。法改正・施行日ネタ（例：カスハラ 26年10月施行）は「不急」の回答として日付を明示</td></tr>
+      <tr><td>T7</td><td><strong>業界別LP</strong><br><span class="chip">不適</span><span class="chip b">CMS</span></td><td class="pri p2">P2</td><td>T6と同テンプレ構造で業界切り口（派遣/警備/建設/製造/小売…）。「業界あるある分かってる感」の演出（壁打ちシートID20）</td></tr>
+      <tr><td>T8</td><td><strong>eラーニング教材・講座紹介</strong><br><span class="chip">不要</span><span class="chip b">CMS</span></td><td class="pri p2">P2</td><td>ラベルで「eラーニングの教材」であることを明示（v1.5）。owned講座のみ掲載（licensedは対象外・追って検討）。検索/カテゴリ絞り込み＋講座詳細。<mark>「お客様の声」ブロックを静的掲載</mark>（許諾済みの声を手動更新。§07参照）。エンジンが量産する講座LPとの住み分け：一覧・検索＝本体、個別深掘り＝エンジン量産物（§09）</td></tr>
+      <tr><td>T9</td><td><strong>コラム記事</strong><br><span class="chip y">CV接続</span></td><td class="pri p1">P1</td><td><strong>最重要改修</strong>。記事内CTA（見出し間の文脈連動型）＋追従CTA（サイド/ボトム）＋関連講座・関連テーマLPウィジェット＋記事末の資料DLオファー。記事カテゴリごとに出し分けるCTAバナー管理機能。表記は「お役立ち記事」→「コラム」へ</td></tr>
+      <tr><td>T10</td><td><strong>資料DL 一覧/詳細</strong></td><td class="pri p2">P2</td><td>資料の「3点セット」化（概要＋料金＋教材一覧 or 事例集を1フォームで）。検討後期向けに<mark>稟議書テンプレ・上司説得資料・比較表Excel</mark>を新規ラインナップ（既存の稟議資料PPTが原型）</td></tr>
+      <tr><td>T11</td><td><strong>フォーム（HubSpot）</strong></td><td class="pri p1">P1</td><td>資料DL/問合せ/デモ/見積相談の4種。項目数最小化（DLは1分で完了を明記）。シミュレーター試算値の引き継ぎ（hidden/クエリパラメータ）。Thanksページは種別ごとにURL分離（§08の計測前提）</td></tr>
+      <tr><td>T12</td><td><strong>エンタープライズ</strong><br><span class="chip">不信</span></td><td class="pri p3">P3</td><td>大手・グループ企業向け1ページ（カオナビ/enterprise/型）：認証・API/CSV連携・大規模同時受講・専任サポート・大手事例。壁打ちシートID23</td></tr>
+      <tr><td>T13</td><td><strong>比較コンテンツ</strong><br><span class="chip">不適</span></td><td class="pri p2">P2</td><td>「eラーニングシステム比較」記事群の受け皿を本体側に整備（既存t-033/t-014のリライトと役割整理）＋「徹底比較表つき資料」DL化（Smart Boarding型）。比較軸に「集合研修も同じ窓口でできるか」を必ず入れる（manebiの構造的差別化）</td></tr>
+      <tr><td>T14</td><td><strong>集合研修ラインナップ</strong><br><span class="chip">不要</span><span class="chip">不適</span></td><td class="pri p2">P2</td><td>新設（v1.5）。「manebiはeラーニングだけでなく集合研修もできる」の受け皿。テーマ×階層のラインナップ一覧＋各プログラム概要＋講師・カスタマイズ対応＋ハイブリッド事例への導線。<mark>kintone「集合研修テーママスタ」との連動を検討</mark>（マスタ更新がサイトに自動反映＝運用要件と整合）。「◯◯研修 講師派遣」「集合研修 外注」系KWの受け皿</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>サイト共通の運用要件（運用が楽なサイトにする）</h3>
+  <ul>
+    <li><strong>動的な数値・実績の一元管理</strong>：教材数（約8,000）・コース数・導入社数（6,900社）・継続率（98.8%）・受講回数・受賞歴・料金（単価/最低月額/初期費用）を<mark>グローバル値としてWordPress管理画面で一元管理</mark>し、全ページの本文・バッジ・比較表・構造化データ・OGPへショートコード/グローバルフィールドで自動反映。1箇所更新すれば全ページ一括で変わる。数値には「時点」もセットで持たせる（出典・時点表記の自動更新、景表法対応）</li>
+    <li><strong>CTA・バナーの一元管理</strong>：CTA文言・リンク先・マイクロコピーはブロックパターン/再利用ブロックで管理し、ABテストや文言変更を全ページ一括反映。キャンペーンバナー枠も同様に期限付きON/OFF</li>
+    <li><strong>比較表・機能○×表のデータ化</strong>：他社比較・機能一覧はハードコードせず、テーブルデータとして管理（更新は表データの差し替えのみ）</li>
+    <li><strong>実装原則</strong>：固有名詞・数値の直書き（ハードコード）を禁止事項として制作会社への指示書に明記</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section id="s6">
+  <h2><span class="no">06</span>SEO要件</h2>
+
+  <h3>Titleタグ規則</h3>
+  <ul>
+    <li>トップ：カテゴリKW＋実績数値型 — 例「eラーニング・研修プラットフォーム manebi｜導入6,900社のAI搭載LMS」</li>
+    <li>下層：<strong>商用KW前置き＋ブランド後置き型</strong>（Schoo型）— 「{商用KW}｜manebi（マネビ）法人向けeラーニング・研修」。例「eラーニングの料金・費用｜manebi」「導入事例【業界別】｜manebi」</li>
+    <li>No.1・実績数値には必ず調査出典と時点を付記（景表法対応）</li>
+  </ul>
+
+  <h3>商用KW → 受けページの移管マップ</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>KW群（月間検索）</th><th>現在の受け</th><th>リニューアル後の受け</th></tr></thead>
+    <tbody>
+      <tr><td>e ラーニング（74,000）ほかビッグKW</td><td>/service/e-learning/（順位付かず）</td><td>同URLを<strong>T1/T3相当に全面再構築</strong>（構造・網羅性・内部リンクを商用KW仕様に）</td></tr>
+      <tr><td>eラーニング 料金/価格（〜1,000）</td><td>t-025 ほか分散</td><td><strong>T2 料金ページ（新設）</strong>に集約</td></tr>
+      <tr><td>eラーニング 比較/おすすめ/ランキング（〜1,100）</td><td>t-033・t-014（7月に崩落）</td><td>T13で役割整理の上リライト。記事は残しつつ本体側に比較資産を持つ</td></tr>
+      <tr><td>◯◯研修 eラーニング／研修テーマ系</td><td>個別LP・コラムに散在</td><td><strong>T6 研修テーマLP群（新設）</strong></td></tr>
+      <tr><td>eラーニング 事例</td><td>/case/（10位）</td><td>T5再設計で強化＋業界別インデックス</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>トピッククラスタ戦略（「eラーニング」単ワード上位の獲得ロードマップ）</h3>
+  <p>月間74,000の「e ラーニング」で上位を取るには単発ページの改善では不可能で、<mark>ドメイン全体で「eラーニングの第一人者」とGoogleに認識させる構造</mark>が必要。以下のピラー＝クラスタ構造を採用する。</p>
+  <ul>
+    <li><strong>ピラー</strong>：/service/e-learning/ を全面再構築。「eラーニングとは」の基礎から機能・教材・料金・比較・事例までを束ねる<strong>ハブページ</strong>とし、各クラスタページへ内部リンクを張る目次的役割を持たせる</li>
+    <li><strong>クラスタ第1層（商用）</strong>：T2料金／T3機能／T13比較（おすすめ・ランキング系）／T5事例／T8教材 — 各ページからピラーへ統一アンカーテキストで返しリンク</li>
+    <li><strong>クラスタ第2層（情報）</strong>：「eラーニングとは」「メリット/デメリット」「効果」「導入手順」「システム/LMSとは」等のコラム群（既存m-0016・m-0139等のピラー記事リライトリストを流用）＋AI集客エンジンの量産記事</li>
+    <li><strong>内部リンク規則</strong>：クラスタ→ピラー（必須・統一アンカー）／ピラー→主要クラスタ（一覧型）／クラスタ間は関連タグで相互接続。この規則をテンプレ（T6/T9）に構造として埋め込み、エンジン生成物にも自動適用させる（§09）</li>
+    <li>同構造を「ハラスメント研修」「コンプライアンス研修」等のテーマ単位でも反復（T6テーマLPをサブピラーとする入れ子構造）。カテゴリ順位データ（14カテゴリ週次）で クラスタ単位の成長を監視する</li>
+  </ul>
+
+  <h3>構造化データ（LLMO対策・壁打ちシートID24）</h3>
+  <p>全テンプレに JSON-LD を自動出力：Organization／BreadcrumbList／FAQPage（T1・T2・T6ほかFAQブロック保有ページ）／Product＋Offer（T2）／Course（T8講座）／Article（T9）。将来、同意取得済み受講者の声が載る段階でReview/AggregateRatingを追加検討。</p>
+
+  <h3>順位下落を拾うリライトの仕組み化</h3>
+  <p>既存の月6本リライト運用（15位→8位が最コスパ／9位→4位が次点、の選定基準）を、<mark>順位監視 → 下落検知 → リライトキュー起票</mark>の半自動フローに昇格させる。KW順位シートの週次データを起点に「先週比◯位以上の下落」「圏外転落」を検知してリスト化。実装はリニューアル本体と切り離し、AI集客エンジンのルーティンとして載せる案を島崎さんと協議（§09）。</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="s7">
+  <h2><span class="no">07</span>CTA・マイクロコピー体系</h2>
+  <p class="lead">CTAは全サイトで種類・文言・階層を統一管理する。ボタン文言そのものに価値と不安払拭を埋め込む（カオナビ/SmartHR型）。</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>CTA</th><th>ボタン文言（案）</th><th>マイクロコピー（案）</th><th>配置</th></tr></thead>
+    <tbody>
+      <tr><td><strong>資料DL（主）</strong></td><td>3分でわかるmanebi<br>資料3点セットをダウンロード</td><td>「入力1分／その場でDL／いつでも見られます」</td><td>ヘッダー固定・FV・記事内・フッター</td></tr>
+      <tr><td><strong>無料デモ（副）</strong></td><td>実際の画面を触れる<br>無料デモを試す</td><td>「お申込みから<mark>最短30分でログイン情報をお届け</mark>。営業との日程調整は不要です」＋小注釈「※お申込み状況により最大24時間ほどいただく場合があります」（公言OK確定・期待値調整の注釈は小さく併記）</td><td>ヘッダー固定・FV・機能/料金ページ</td></tr>
+      <tr><td>料金導線</td><td>自社の人数で料金を試算する</td><td>「その場で概算がわかります（無料・登録不要）」</td><td>TOP・全テンプレ中腹</td></tr>
+      <tr><td>見積相談</td><td>この見積もりプランで相談する</td><td>「無理な営業はいたしません。お見積りだけでもOKです」</td><td>シミュレーター結果直下</td></tr>
+      <tr><td>検討後期</td><td>稟議書テンプレ・比較表をダウンロード</td><td>「上司への説明はmanebiが肩代わりします」</td><td>料金・事例・T13</td></tr>
+      <tr><td>フッター3択</td><td colspan="2">「資料が欲しい／相談したい／実際の画面を見たい」の状態別3択（learningBOX型）</td><td>全ページ最下部</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>反論処理FAQ（トップ・料金ページに常設）</h3>
+  <ul>
+    <li>「無料動画や内製研修との違いは？」「より安価なeラーニングとの違いは？」</li>
+    <li>「決裁者にどう説明すればいい？」→ 稟議書テンプレDL＋人材開発支援助成金の案内（Schoo型）</li>
+    <li>「導入までどれくらい？」→ 最短2営業日・導入5ステップ図（既存稟議資料の素材を転用）</li>
+  </ul>
+
+  <h3>お客様の声（静的運用に決定・v1.2）</h3>
+  <p>T8教材ページ・T6テーマLPに「お客様の声」ブロックを<strong>静的に掲載</strong>する（既存の導入事例・顧客アンケートから掲載許諾済みのものを抜粋。管理者の声＋受講者の声の2種）。エンドユーザーの生声は「不信」への回答であり、講座ページの独自コンテンツとしてSEO/LLMOにも寄与する。<span class="muted">LMS内での自動収集→管理者向けサマリ提供の構想（3層構造）は将来拡張とし、本リニューアルのスコープから除外。ブロックは声の差し替えが容易な構造にしておき、将来の自動化に備える。</span></p>
+</section>
+
+<!-- ================================================================ -->
+<section id="s8">
+  <h2><span class="no">08</span>計測設計（GA4 / HubSpot）</h2>
+  <div class="callout blue">
+    <div class="ct">リニューアル前に実施（Phase 0）</div>
+    <p>現状のキーイベントは <span class="u">CV_資料DLor問合せor体験</span> の1本のみ。<strong>効果検証のベースラインを取るため、計測分離はリニューアル公開前に完了させる。</strong></p>
+  </div>
+  <h3>キーイベント再定義</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>キーイベント（新）</th><th>発火条件</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td><span class="u">cv_document_dl</span></td><td>資料DL完了（HubSpotフォーム送信）</td><td>最重要CV。資料IDをパラメータで持ち資料別に分析</td></tr>
+      <tr><td><span class="u">cv_contact</span></td><td>問合せフォーム送信</td><td></td></tr>
+      <tr><td><span class="u">cv_demo</span></td><td>無料デモ申込</td><td></td></tr>
+      <tr><td><span class="u">cv_estimate</span></td><td>見積相談フォーム送信</td><td>シミュレーター経由フラグを付与</td></tr>
+      <tr><td><span class="u">sim_interact</span>（非CV）</td><td>シミュレーター操作</td><td>マイクロCV。試算→フォーム到達率を監視</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li>HubSpotフォーム送信はGTM経由でGA4へ送出。Thanksページは種別ごとにURL分離（例 /thanks/document/ /thanks/demo/）し、二重計測防止</li>
+    <li>旧イベントは並走期間を設けて連続性を確保（統合レポート・取締役会資料の月次系列を切らさない）</li>
+    <li>コラム経由CV（T9のCTAクリック→CV）をエンジンの効果検証（GA4/SC取り込み）でも見られるよう、CTA位置別のイベントパラメータを設計</li>
+  </ul>
+
+  <h3>KGI 375件の内訳（v1.3・kintone/Slack実測ベース）</h3>
+  <p>リードの正はkintone。現状のCV種別は、HubSpotフォーム通知（Slack #12_02_manebi_web問い合わせ）の<strong>【フォーム名】を全数集計</strong>して算出した（26年6-8月・テスト/社内送信57件除外後の有効467件）。GAの完了ページPVは再DL・リロード・既存リードを含み過大なため使わない。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>CV種別</th><th class="num">実測<br>（3ヶ月計）</th><th class="num">実力値<br>（月間）</th><th class="num">目標<br>（月間）</th><th>成長ドライバー</th></tr></thead>
+    <tbody>
+      <tr><td><strong>資料DL</strong></td><td class="num">311（67%）</td><td class="num">約105</td><td class="num"><strong>125</strong></td><td>コラムCTA接続（T9）＋3点セット化＋稟議テンプレ・比較表・セキュリティ資料の新設（T10）</td></tr>
+      <tr><td>問合せ</td><td class="num">98（21%）</td><td class="num">約20<span class="muted">※1</span></td><td class="num">20</td><td>現状維持（質重視）</td></tr>
+      <tr><td>無料デモ</td><td class="num">53（11%）</td><td class="num">約18</td><td class="num"><strong>25</strong></td><td>「最短30分」訴求への全面刷新＋機能・料金ページからの導線新設</td></tr>
+      <tr><td>見積相談</td><td class="num"><strong>0</strong>（フォーム自体が無い）</td><td class="num">0</td><td class="num"><strong>10</strong></td><td>シミュレーター本体統合→「この見積もりプランで相談する」（T2）。完全な新設CV</td></tr>
+      <tr><td><strong>サイト経由 計</strong></td><td class="num">467</td><td class="num"><strong>約150</strong></td><td class="num"><strong>180</strong></td><td>サイト起因リードを＋30/月（＋20%）</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">※1 6月の問合せ62件には営業売り込みノイズが多く（「営」リアクション付き多数）、実力値は7-8月ペース（15〜21件/月）を採用。<br>
+  KGI 375はマーケ全体リード（kintone基準。展示会・比較サイト・セミナー等を含む全チャネルで現状約325〜350/月）。<mark>リニューアルはサイト経由の＋30/月でKGI増分を担う</mark>。セミナー申込は別チャンネル通知のため別KPI扱い（コラム・テーマLPからの送客は行う）。</p>
+
+  <div class="callout blue">
+    <div class="ct">計測要件の追加（v1.3）：CV種別のkintone自動連携</div>
+    <p>現状、CV種別はSlack通知を人が目視して判断しており、kintone商談アプリに構造化フィールドが無い（「キャンペーン名」は旧サービス時代の選択肢のまま97%空欄、utm_campaignは全件空欄）。リニューアルと同時に<strong>HubSpotフォーム名（＝CV種別）をkintone登録時に自動で持たせる</strong>（既存「キャンペーン名」フィールドの選択肢刷新 or 新フィールド）。これでKGI 375の内訳を松尾さんが普段見ているkintone上で追跡でき、GA×kintoneの月次突合も可能になる。フォーム名の命名規則（種別プレフィックス）もPhase 0で整理する。</p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="s9">
+  <h2><span class="no">09</span>AI集客エンジン互換要件</h2>
+  <p class="lead">島崎さん作のAI集客エンジン（200_AI集客エンジン）は講座LP・記事・FAQ・構造化データをWordPress下書きとして量産する。リニューアル後のサイトはこの<mark>量産物の受け皿</mark>として設計する。</p>
+  <ul>
+    <li><strong>テンプレ互換</strong>：エンジンが生成する講座LP・記事が、T6/T8/T9テンプレに手直しなしで流し込める入稿仕様（見出し構造・FAQブロック・CTAブロック・JSON-LD）を共同定義する。CTA・FAQはWordPressブロックパターン化し、エンジン側は中身だけ生成</li>
+    <li><strong>既存資産の保護</strong>：既存URL・月間3.7万セッションは無傷（エンジン側の運用原則と共通）。リニューアルでURL変更が必要な場合は301計画を作り、エンジンのカニバリ判定・内部リンクマップへ事前反映</li>
+    <li><strong>公開フローの尊重</strong>：エンジンの「下書き強制・公開ボタンは人間」の原則はリニューアル後も不変。サイト側で公開系の自動化は作らない</li>
+    <li><strong>受講者の声の素材化</strong>：声データをエンジンに渡す場合は同意済み＋PIIマスキング済みのみ（エンジン側憲法のVoice入力制限に準拠）</li>
+    <li><strong>リライト運用の接続</strong>（§06）：順位下落検知→リライトキュー起票をエンジンのルーティンに載せる案を島崎さんと協議</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section id="s10">
+  <h2><span class="no">10</span>進め方・内外製の切り分け</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>フェーズ</th><th>内容</th><th>担当</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Phase 0</strong><br><span class="small muted">即時・並行</span></td><td>GA4計測分離（§08）／kintone CV種別連携／業界3サイトへのCV計測導入／<mark>クイックウィン：現行サイトのキャンペーン試算CTA→simulation-cpへ直リンク修正</mark>／ベースライン取得／本要件定義の確定</td><td>内製</td></tr>
+      <tr><td><strong>Phase 1</strong></td><td>IA確定・ワイヤーフレーム（全テンプレ）・コピー骨子・KWマッピング確定・撮影/素材棚卸し・<mark>corp→サービスサイトのリンク文言×遷移先の整合棚卸し</mark>・比較サイト掲載情報の台帳化</td><td>内製</td></tr>
+      <tr><td><strong>Phase 2</strong></td><td>ビジュアルデザイン（corpトンマナ準拠）・WPテーマ実装・シミュレーター実装・HubSpot連携</td><td><mark>外注候補</mark>（本書＋Phase 1成果物を指示書として支給）</td></tr>
+      <tr><td><strong>Phase 3</strong></td><td>コンテンツ移行・T6/T7/T8量産（エンジン活用）・T9コラムCTA全記事適用・公開/301</td><td>内製＋エンジン</td></tr>
+      <tr><td><strong>Phase 4</strong></td><td>効果検証（新キーイベント）・リライト運用の仕組み化・ABテスト</td><td>内製</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">外注に渡すもの：本書／ワイヤー一式／テンプレ別要件（§05）／CTA文言集（§07）／corpトンマナのデザイン規定。外注が決めるもの：ビジュアル表現の詳細・実装方式（WPテーマ構造は要協議）。</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="open">
+  <h2><span class="no">--</span>意思決定ログと未決事項</h2>
+
+  <h3>決定済み（v1.1反映）</h3>
+  <ul>
+    <li><strong>「最短30分デモ」公言OK</strong> — 期待値調整の小注釈（「※お申込み状況により最大24時間ほどいただく場合があります」）を併記（§07）</li>
+    <li><strong>値引きキャンペーンバナー（78%OFF）はFVから撤去</strong> — キャンペーン自体10月末終了。汎用バナー枠として設計（§05 T1）</li>
+    <li><strong>オープン研修はナビ・テンプレから完全撤去</strong> — 旧URL群のリダイレクト先一覧はPhase 1で作成</li>
+    <li><strong>動的数値の一元管理を必須要件化</strong> — 教材数・導入社数等のハードコード禁止（§05 運用要件）</li>
+    <li><strong>eラーニングセクションはマイクロサイト化しない</strong>（v1.2確定） — 1ドメイン1サイトで旗艦セクション＋専用ローカルナビ方式。SEO・マーケティングマターで判断（オーソリティ集約がトピッククラスタ戦略の前提）</li>
+    <li><strong>業界特化3サイトは段階論で確定</strong>（v1.2） — 本リニューアルではT7業界別LP新設＋相互導線まで。ドメイン統合はデータを見てPhase 4以降に判断</li>
+    <li><strong>お客様の声は静的掲載に決定</strong>（v1.2） — LMS自動収集の3層構想はスコープ外・将来拡張（§07）</li>
+    <li><strong>「教材・研修」の2軸再設計</strong>（v1.5） — 旧「研修ラインナップ」の「eラーニングか集合研修か分からない」曖昧さを解消。ナビは 🖥eラーニング教材／👥集合研修（T14新設）／テーマから探す の3切り口、テーマLP（T6）は形態横断ハブ、「両方できる」を差別化として一貫訴求</li>
+    <li><strong>サービスメニューの3グループ化</strong>（v1.6） — 「経営・組織（Wonder AI／企業リブランディング／人事評価=グループ会社Prime）」「人材開発・教育」「業界向け」。ファネル上流→教育の一気通貫を訴求。<strong>DXコンサルは撤去</strong></li>
+    <li><strong>東証上場ロゴを全サイト共通フッターに</strong>（v1.6） — 本体・corp・派遣・警備・建設。共通パーツ化し認証マークと信頼帯で1セット</li>
+    <li><strong>Prime（primec.co.jp）と相互リンク</strong>（v1.6） — 本体側はサービスメニュー＋フッターのグループ会社リンク、Prime側からの返しリンクは先方と調整</li>
+  </ul>
+
+  <h3>未決（要判断）</h3>
+  <ol>
+    <li><strong>CV375件の内訳</strong> — Slack通知全数集計による実測ベースの配分を§08に記載（v1.3）。松尾さんの承認待ち</li>
+    <li><strong>v1.6関連の確認事項</strong> — ①東証ロゴの市場区分・証券コード・使用規定（申請要否）②Wonder AI／企業リブランディングの受けページ（既存LP有無、無ければ概要＋問合せの軽量ページ新設）③DXコンサル撤去の事業側確認 ④Prime側の返しリンク調整（先方サイト管轄）</li>
+    <li><strong>業界3サイトの流入データ確認</strong> — 派遣・警備は確認済み（26年6-8月実測）。<strong>派遣</strong>：GAプロパティの99%は顧客別サブドメイン（pasona.haken-mikata.jp等）の<em>受講環境の利用ログ</em>で、マーケサイト本体（haken-mikata.jp）は約1,000セッション/月・<mark>CV計測ゼロ（キーイベント未設定）</mark>。<strong>警備</strong>：/keibi 系で約220セッション/月・キーイベント約20/月（LPのCVRは高い）※同プロパティにWeb面接（/meet）が同居。<strong>建設</strong>：GAアカウントが別（a200005755）のため権限付与待ち。<br><mark>示唆</mark>：業界サイトのマーケ流入は合計でも本体（1.6〜2万セッション/月）の5〜10%規模。①T7業界別LPを本体に新設して商用KWは本体側で刈り取る、②派遣・警備のマーケページにCV計測を入れる（Phase 0スコープに追加）、③マーケページの統合はその実測を見てPhase 4以降に判断（受講環境サブドメイン群は統合対象外）——の3段構え</li>
+  </ol>
+</section>
+
+<footer>
+  manebi.co.jp サービスサイト フルリニューアル 要件定義書 v1.0 — 根拠データ：GA4（26年6-8月）／Search Console／SEO対策KW管理シート／競合5社・参考5社サイト実査（2026-09-01）／サイト追加要素メモ（制作会社壁打ち）／「4つの不」対策資料
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>脱WordPressとSEOの検証｜manebi サービスサイト リニューアル</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#ffffff; --mist:#f4f7f9; --panel:#fafcfd; --line:#dde5ea;
+    --ink:#17242e; --ink2:#54636e; --ink3:#8695a0;
+    --blue:#1d9fd6; --blue-brand:#51d0ff; --blue-soft:#e8f7fe;
+    --yellow:#dced00; --yellow-soft:#f7fabf;
+    --purple:#7c78d8; --purple-soft:#eeedfb;
+    --good:#0f7a52; --good-soft:#e8f7f0; --warn:#a86b00; --warn-soft:#fff6e5;
+    --bad:#c0392f; --bad-soft:#fdeeed;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+      --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+      --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+      --yellow:#d9e85a; --yellow-soft:#33370f;
+      --purple:#ada9f5; --purple-soft:#272544;
+      --good:#4ecf9a; --good-soft:#13291f; --warn:#e0a44a; --warn-soft:#332813;
+      --bad:#ff8577; --bad-soft:#331d1a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0f171d; --mist:#141e26; --panel:#16222b; --line:#2a3742;
+    --ink:#e8eef2; --ink2:#a7b4bd; --ink3:#75838d;
+    --blue:#5bc8f5; --blue-brand:#51d0ff; --blue-soft:#12303f;
+    --yellow:#d9e85a; --yellow-soft:#33370f;
+    --purple:#ada9f5; --purple-soft:#272544;
+    --good:#4ecf9a; --good-soft:#13291f; --warn:#e0a44a; --warn-soft:#332813;
+    --bad:#ff8577; --bad-soft:#331d1a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    font-size:15px; line-height:1.9; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px; margin:0 auto; padding:56px 24px 120px}
+  a{color:var(--blue); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--blue) 38%,transparent); word-break:break-all}
+  a:hover{border-bottom-color:var(--blue)}
+  a:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--ink3); text-transform:uppercase}
+  h1{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:clamp(28px,4.6vw,40px); line-height:1.45; margin:14px 0 8px; text-wrap:balance}
+  h1 .ast{color:var(--blue-brand)}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:18px; font-size:13px; color:var(--ink2)}
+  .meta b{color:var(--ink); font-weight:500}
+  section{margin-top:70px}
+  h2{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:25px; line-height:1.45; margin:0 0 6px; text-wrap:balance; scroll-margin-top:24px}
+  h2 .no{font-family:var(--mono); font-weight:500; font-size:12.5px; color:var(--blue); display:block; letter-spacing:.14em; margin-bottom:6px}
+  h2::after{content:""; display:block; width:52px; height:4px; margin-top:12px; background:var(--yellow); border-radius:2px}
+  h3{font-size:16.5px; font-weight:700; margin:34px 0 10px}
+  h3::before{content:"* "; color:var(--blue-brand); font-family:"Zen Old Mincho",serif; font-weight:700}
+  p{margin:10px 0; max-width:47em}
+  ul,ol{margin:10px 0; padding-left:1.5em; max-width:47em}
+  li{margin:6px 0}
+  .lead{color:var(--ink2); font-size:14.5px; max-width:47em}
+  mark{background:linear-gradient(transparent 62%, var(--yellow-soft) 62%); color:inherit; padding:0 2px}
+  .muted{color:var(--ink3)} .small{font-size:13px}
+  blockquote{margin:12px 0; padding:10px 16px; border-left:3px solid var(--blue); background:var(--blue-soft);
+    font-size:13px; line-height:1.7; color:var(--ink2); border-radius:0 8px 8px 0; max-width:47em}
+  blockquote cite{display:block; margin-top:6px; font-style:normal; font-size:11.5px; color:var(--ink3)}
+  .verdict{border-radius:14px; padding:20px 24px; margin:20px 0; border:1px solid var(--line); background:var(--panel)}
+  .verdict.no{background:var(--good-soft); border-color:color-mix(in srgb,var(--good) 30%,var(--line))}
+  .verdict.warn{background:var(--warn-soft); border-color:color-mix(in srgb,var(--warn) 30%,var(--line))}
+  .verdict .vt{font-family:"Zen Old Mincho",serif; font-size:19px; font-weight:700; line-height:1.5; margin-bottom:6px}
+  .verdict.no .vt{color:var(--good)} .verdict.warn .vt{color:var(--warn)}
+  .verdict p{max-width:none; margin:6px 0}
+  .tbl{overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:16px 0; background:var(--panel)}
+  table{border-collapse:collapse; width:100%; font-size:13px; line-height:1.65}
+  th,td{padding:9px 14px; text-align:left; vertical-align:top; border-top:1px solid var(--line)}
+  thead th{border-top:none; background:var(--mist); font-size:11.5px; letter-spacing:.05em; color:var(--ink2); white-space:nowrap}
+  td .u{font-family:var(--mono); font-size:12px}
+  .chip{display:inline-block; font-size:11px; font-weight:500; border-radius:999px; padding:1px 9px; margin-right:4px; white-space:nowrap}
+  .chip.ai{background:var(--purple-soft); color:var(--purple)}
+  .chip.wp{background:var(--blue-soft); color:var(--blue)}
+  .chip.ok{background:var(--good-soft); color:var(--good)}
+  .chip.ng{background:var(--bad-soft); color:var(--bad)}
+  .conf{font-family:var(--mono); font-size:10.5px; color:var(--ink3); white-space:nowrap}
+  .card{border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin:14px 0; background:var(--panel)}
+  .card h4{margin:0 0 4px; font-size:15px; font-weight:700}
+  .card .st{font-family:var(--mono); font-size:11.5px; color:var(--ink3); margin-bottom:8px; line-height:1.6}
+  .card p{margin:6px 0; font-size:13.5px; max-width:none}
+  .rec{counter-reset:r; list-style:none; padding-left:0}
+  .rec li{counter-increment:r; position:relative; padding-left:40px; margin:16px 0}
+  .rec li::before{content:counter(r); position:absolute; left:0; top:2px; width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center; border-radius:50%;
+    background:var(--blue); color:#fff; font-family:var(--mono); font-size:12px; font-weight:500}
+  footer{margin-top:90px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink3)}
+  footer p{max-width:none}
+
+  .sitenav{position:sticky; top:0; z-index:99; background:color-mix(in srgb,var(--paper) 90%,transparent);
+    backdrop-filter:saturate(150%) blur(10px); border-bottom:1px solid var(--line)}
+  .sitenav-in{max-width:900px; margin:0 auto; padding:10px 24px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .sitenav a{font-size:12.5px; color:var(--ink2); border-bottom:none; white-space:nowrap}
+  .sitenav a:hover{color:var(--blue)}
+  .sitenav a.home{font-family:"Zen Old Mincho",serif; font-weight:700; font-size:14px; color:var(--ink)}
+  .sitenav a.on{color:var(--blue); font-weight:700}
+  .sitenav .sp{flex:1}
+  @media print{ .sitenav{display:none} }
+</style>
+</head>
+<body>
+<nav class="sitenav"><div class="sitenav-in"><a class="home" href="../">manebi リニューアル<span style="color:var(--blue-brand)">*</span></a><a  href="../requirements/">要件定義書</a><a  href="../phase1-design/">Phase 1 設計書</a><a class="on" href="../research/">調査レポート</a><span class="sp"></span><a href="https://github.com/matsuo-boop/service-site-renewal-01">GitHub &#8599;</a></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Research Report &nbsp;/&nbsp; 2026-09-13</div>
+  <h1>脱WordPressは<br>SEOに悪影響なのか<span class="ast">*</span></h1>
+  <p class="lead">AIにソースを書かせた実在サイトの調査と、WordPressを外すことのSEO影響の検証。月間1.6〜2万セッションの既存SEO資産を持つ manebi.co.jp のフルリニューアルという文脈で、実務的な結論を出す。</p>
+  <div class="meta">
+    <span>依頼：<b>マーケティング部 松尾</b></span>
+    <span>調査：<b>26ソース／242論点を抽出・検証</b></span>
+    <span>関連：<b>リニューアル要件定義書 v1.6</b></span>
+  </div>
+</header>
+
+<section id="s0">
+  <h2><span class="no">結論</span>先に3行</h2>
+  <div class="verdict no">
+    <div class="vt">① CMSの種類はGoogleのランキング要因ではない。WordPressを外すこと自体にSEOの不利益はない。</div>
+    <p>Googleが複数回、公式に明言している。ここは争点ではない。逆に「WordPressだから有利」ということもない。</p>
+  </div>
+  <div class="verdict warn">
+    <div class="vt">② 順位が落ちる原因は「CMSを変えたこと」ではなく「移行で壊すこと」。そしてそれは高頻度で起きている。</div>
+    <p>同じWordPressのままドメインだけ変えて流入を9割失い、回復に1年半かかった実例がある。CMS非依存のリスクであり、今回のリニューアルでも同じ危険がある。</p>
+  </div>
+  <div class="verdict warn">
+    <div class="vt">③ manebiの結論：WordPressは残す。ただしテーマ実装にAIコーディングを使う。</div>
+    <p>SEOが理由ではない。①AI集客エンジンがWordPress下書き前提で組まれている ②非エンジニアの日常更新はヘッドレスの弱点だとベンダー自身が明言 ③AI検索クローラはJSを実行せずLLMO投資と衝突する——の3点。詳細は最終セクション。</p>
+  </div>
+</section>
+
+<section id="s1">
+  <h2><span class="no">Q1</span>AIにソースを書かせた実在サイト</h2>
+  <p class="lead">「AIが全部書いた本番サイト」は2026年に入って実名事例が出てきた。ただし<mark>見つかった事例はすべて小規模で、月間数万セッション級のSEO資産を持つサイトの事例は存在しない</mark>。これが今回の調査で最も重要な発見のひとつ。</p>
+
+  <div class="card">
+    <h4>F2T（f2t.jp）— コーポレートサイト <span class="chip ai">Claude Code</span></h4>
+    <div class="st">Next.js 16 + Tailwind CSS 4 + microCMS + Vercel ／ 2026年4月公開 ／ 企画からデプロイまで約1日</div>
+    <p>AIエージェント開発企業が自社サイトをClaude Codeとの対話のみで構築。OGP・XMLサイトマップ・構造化データ（Person × Organization × BlogPosting）までAIが実装。実装コストは制作会社見積もりの1/3〜1/5と自社報告。</p>
+    <p><strong>移行元はWordPressではなくWebflow。</strong>離脱理由は「独自構文のためAIエージェントがコードレベルで操作できない」——SEOではなく<mark>AIが扱えるかどうか</mark>というCMS選定基準。</p>
+    <p class="muted">実害：トップページのブログセクションが旧サイトのURLを指したままで404が発生し、手作業でのURL移行が必要になった。</p>
+  </div>
+
+  <div class="card">
+    <h4>talental（talental.jp）— コーポレートサイト <span class="chip ai">Claude Code</span> <span class="chip wp">脱WordPress</span></h4>
+    <div class="st">Claude Code + Astro + Vercel + Notion(DB) + Cloudflare + Resend ／ 2026年3月 ／ 着手から公開まで2日＋調整1日</div>
+    <p>WordPress＋プラグイン構成を意図的に捨てて全面再構築した、数少ない「本当の脱WordPress × AI生成」事例。「表示の軽さは明らかに出やすくなった」と定性報告（CWV実測値の提示はなし）。</p>
+    <p><strong>事故が3件記録されている：</strong>DNS設定ミスで関連2サイトが一時404／旧記事の画像パスが崩れて画像が全非表示／ページごとにトンマナが少しずつズレる。</p>
+    <p class="muted">そして最も重要な点：<mark>日常更新用のCMS管理画面は作っていない。「いったん自分だけが触る前提」</mark>。非エンジニアの運用は解決していない。</p>
+  </div>
+
+  <div class="card">
+    <h4>ジカーズ（中古車査定）— サービスサイト＋オウンドメディア <span class="chip ai">Claude Code</span></h4>
+    <div class="st">Claude Code + Astro + Tailwind + MDX + Vercel ／ 2026年4月 ／ 構築者は非エンジニア（UXデザイナー/PdM）</div>
+    <p>CMSを「人間が触るもの」から「AIが触るもの」に作り替えた事例。編集UIは管理画面ではなく<strong>Claude Codeのスラッシュコマンド</strong>（<span class="u">/article</span>、<span class="u">/article-news &lt;URL&gt;</span>、<span class="u">/article-bulk</span>、<span class="u">/article-cluster</span>）。SEOのピラー＋クラスタ記事生成までワークフロー化されている。</p>
+    <p>移行元はSTUDIO（ノーコード）。離脱理由は順位ではなく、月50本以上の記事に対しサムネ差し替え・本文流し込み・関連リンク調整・構造化データ確認という手作業が積み上がる運用負荷。</p>
+    <p class="muted">品質担保として検証フック3種（存在しないニュースソース検出・用語lint・frontmatter必須項目チェック）とZodスキーマを実装。<mark>「ユーザー承認なしでのpushは禁止」</mark>を明文化。</p>
+  </div>
+
+  <div class="card">
+    <h4>covid19.teraren.com — 4,700記事のオウンドメディア <span class="chip ai">Claude Code</span> <span class="chip wp">脱WordPress</span></h4>
+    <div class="st">WordPress → Astro + Cloudflare Pages ／ 2025年10月 ／ 記事数4,700</div>
+    <p>唯一の「記事数が多い」脱WordPress×AI事例。WordPressのXMLからMarkdownへの変換処理をClaude Codeが実装。<strong>4,700ページのビルドが10秒</strong>、デプロイ全体でも約7分。運用コストは月額ゼロ（Cloudflare無料枠）。</p>
+    <p>SEO面の実装：<mark>301リダイレクトを使わず、既存URL構造をそのまま再現する方針</mark>（記事数が多くリダイレクト管理が現実的でないため）。サイトマップは <span class="u">@astrojs/sitemap</span> が自動生成、サイト内検索は Pagefind で代替。</p>
+    <p class="muted">ただし<strong>「PVはほとんど無い」個人サイト</strong>であり、SEO資産の保全という観点での検証にはならない。ビルド時間短縮のため画像最適化を省いた結果、記事ページのLighthouseスコアは低い。</p>
+  </div>
+
+  <h3>参考：AIは使っていないが脱WordPressした事例</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>サイト</th><th>構成</th><th>結果</th></tr></thead>
+    <tbody>
+      <tr><td>Webクリエイターボックス<br><span class="muted small">2010年開設・記事1,000件超</span></td><td>WordPress（15年）→ Next.js + Vercel + microCMS（2025年）</td><td>動機はSEOではなく<strong>動作の重さとセキュリティ懸念</strong>。Lighthouseスコアが大きく改善。ただしSEO影響・URL変更・リダイレクト設計への言及が一切なく、検証材料にはならない</td></tr>
+      <tr><td>ブースターテクノロジー<br><span class="muted small">社員2名</span></td><td>WordPress → Astro（2026年8月）</td><td>「Lighthouseスコアが大幅改善」のみで数値提示なし。SEOへの言及ゼロ。<mark>移行を実施した当事者自身が「非エンジニアが管理画面から気軽に更新したいならAstro単体では不十分、ヘッドレスCMS併用を推奨」と明記</mark></td></tr>
+      <tr><td>Panda Patches</td><td>WordPress → Next.js on Vercel</td><td>月38,000セッション規模で「SEO下落ゼロ」を報告（Vercelコミュニティ投稿・第三者検証なし）</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="s2">
+  <h2><span class="no">Q2</span>CMSはランキング要因か — 明確にNO</h2>
+  <p class="lead">ここは議論の余地がない。Googleが複数回、公式に否定している。</p>
+
+  <blockquote>
+    我々の検索システムは、特定のCMSを識別して異なる扱いをすることはない。Googleにとって、CMSはWebページを作る手段のひとつにすぎない。
+    <cite>John Mueller（Google Search Advocate）／ Ask Googlebot, 2022年7月</cite>
+  </blockquote>
+  <blockquote>
+    Googleのシステムはページがどう作られたかに注目しない。最終結果に注目する。手で書いたWebページは、WordPressやWix、Squarespaceが生成したものと同じくらい良いものになりうる。
+    <cite>同上</cite>
+  </blockquote>
+  <blockquote>
+    主要なCMS間にSEOの本質的な違いはない。モダンなフレームワークによる静的ホスティングでも問題ない。／ WordPressを使うことによる順位のブーストは存在しない。
+    <cite>John Mueller ／ Reddit, 2025年10月</cite>
+  </blockquote>
+
+  <p>Muellerが挙げた判断基準はシンプルで、<mark>「クロール可能なHTMLを出力し、まともなナビゲーションがあるか」</mark>だけ。これがAI生成・静的サイトの合否判定の実務的な基準になる。</p>
+  <p>補強データとして、Mueller自身が Web Almanac 2024 を引用している：<strong>全サイトの51%がCMSを使っているが、上位1,000サイトでは8%しか使っていない</strong>。大規模・高可視性のサイトほど、むしろ従来型CMSなしで運用されている。</p>
+
+  <h3>AI生成コードであること自体もペナルティにならない</h3>
+  <blockquote>
+    実際のところ、誰も「これはvibe codingされたサイトだ」と見分けることはできない。
+    <cite>John Mueller ／ 2026年5月（Search Engine Journal報道）</cite>
+  </blockquote>
+
+  <div class="verdict warn">
+    <div class="vt">ただしMuellerは同じ場で、AI構築サイトの決定的な弱点を指摘している</div>
+    <blockquote style="background:transparent; border-left-color:var(--warn)">
+      canonicalやサイトマップ、robots.txtといったSEOの基本は、AIツールがサイトを作ったというだけで勝手に設定されるわけではない。
+      <cite>同上</cite>
+    </blockquote>
+    <p>実際にAI構築サイトでは、canonicalタグの欠落、XMLサイトマップの不在、<strong>JavaScriptファイルを誤ってブロックするrobots.txt</strong>、弱いHTML構造と内部リンクが頻発する。「SEOも入れといて」という曖昧な指示では不正確な結果しか出ない。技術指示を出せる人間が各工程に必要で、AIに丸投げできる領域ではない、というのがGoogle側の見解。</p>
+  </div>
+</section>
+
+<section id="s3">
+  <h2><span class="no">Q3</span>では何が順位を落とすのか</h2>
+  <p class="lead">CMSではなく<strong>移行という行為そのもの</strong>。しかもこれはWordPressを使い続けても発生する。</p>
+
+  <h3>Google公式：一度に1つだけ変えろ</h3>
+  <blockquote>
+    一度に1つのことだけ変更しなさい。サイトへの変更は、全部同時にではなく、順番に計画しなさい。
+    <cite>Google Search Central「Site moves with URL changes」<span class="conf">検証 3-0</span></cite>
+  </blockquote>
+  <p>同ドキュメントは「CMSを変更する」「新しいレイアウトに更新する」を<mark>同時にやらず1つずつ実施すること</mark>を名指しで推奨している。今回のリニューアルはIA変更・デザイン刷新・テンプレート刷新をすでに含むので、ここにCMS基盤の変更まで重ねるのはGoogle公式ガイダンスに正面から反する。</p>
+  <p>また「大きな変更をすれば、再クロール・再インデックスの間、順位は変動する」とも明記されており、<strong>移行直後の順位下落それ自体は失敗の証拠ではない</strong>。中規模サイトで新URLが置き換わるまで数週間以上、大規模ではさらに長い。判断には最低でも数週間〜数ヶ月の観測期間が要る。</p>
+
+  <h3>実例：同じWordPressのまま、流入9割減・回復1年半</h3>
+  <p>hooshmand.net の事例は示唆的で、<strong>CMSは変えずドメインだけ移転</strong>した結果、1日1,000超あった検索流入が200→100→50と落ちた。301リダイレクトはCloudflareのエッジで実装され技術的には正しく返っていたが、評価が移らなかった。原因として特定されたのは<mark>旧XMLサイトマップが404を返していたこと</mark>と、リンク先アセットのリダイレクト漏れ。移行後9ヶ月間、Core Web Vitalsレポートにトップページしか現れなかった＝新URLがほぼ再クロールされていなかった。</p>
+  <p>同記事が引く <span class="u">ancient.eu → worldhistory.org</span>（月間300万セッション超）は、約6週間ほぼ全流入を失い、元の水準に戻るまで約1年かかっている。</p>
+
+  <h3>移行事故の原因トップ</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>原因</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td><strong>noindexの消し忘れ</strong></td><td>壊滅的な流入喪失の筆頭原因。ステージング環境のサイト全体noindexが公開時に外されず、全ページがGoogleに「インデックスしないで」と伝え続ける</td></tr>
+      <tr><td>リダイレクトチェーン</td><td>中間URLがrobots.txtでブロックされている構成</td></tr>
+      <tr><td>canonicalの誤設定</td><td>インデックスすべきページをスキップさせる／存在しないURLを指す</td></tr>
+      <tr><td><strong>静的HTMLだったものがJS配下に移動</strong></td><td>JS重量級アーキテクチャへの移行時に必須の診断項目として名指し。これがまさにNext.js/Astro/AI生成コードのリスク</td></tr>
+      <tr><td>内部ナビの削除</td><td>リンク評価を運んでいたナビゲーションメニューを消すこと自体が独立した順位リスク</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">出典：Sitebulb「When Website Migrations Go Wrong」。同ガイドは<strong>移行前にロールバックの判定基準を定義しておくこと</strong>を推奨し、新サイトに問題が深く埋まっている場合は旧サイトへの差し戻しを正当な判断として扱っている。Google公式ドキュメント上、アドレス変更の申請後に旧ドメインの扱いが完全に解消されるまで約180日。</p>
+  <p class="small muted">補足：Google公式のJS SEOガイドは、SPAのルーティングにHistory APIを使うこと、フラグメント（#）で本文を切り替えないことを明記している。<span class="conf">検証 3-0</span></p>
+</section>
+
+<section id="s4">
+  <h2><span class="no">Q4</span>JavaScriptとレンダリング — ここがLLMOと衝突する</h2>
+
+  <h3>Googleに対しては問題ない（実測）</h3>
+  <p>Vercel × MERJ の実測調査（2024年4月、nextjs.org他で10万回超のGooglebotフェッチ、37,000件のビーコン照合）：</p>
+  <ul>
+    <li><strong>200を返すHTMLページの100%が完全にレンダリングされた</strong>。クライアントサイドのAPI呼び出しやReact Server Componentsのストリーミングを含む</li>
+    <li>「レンダリングキューは長い」という通説は誤り。クロールからレンダリング完了まで<strong>中央値10秒</strong>（25パーセンタイル4秒）。ただしロングテールがあり、90パーセンタイル約3時間、99パーセンタイル約18時間</li>
+    <li><mark>クエリ文字列つきURLは著しく遅い</mark>（75パーセンタイルで31分 vs クリーンURLの22秒）</li>
+    <li>初期HTMLに <span class="u">noindex</span> があるとレンダリング自体が止まる。<strong>JSで後から消しても無効</strong></li>
+    <li>URLエンコードされたリンク（<span class="u">https%3A%2F%2F</span>）は発見されない＝リンク評価を失う</li>
+  </ul>
+  <p>クロール効率の評価は<strong>CSRが「Poor」、静的生成（SSG）が「Excellent」</strong>。Google公式も、純粋なクライアントサイドレンダリングよりサーバーサイドレンダリング／プリレンダリングを推奨している。<span class="conf">検証 3-0</span></p>
+
+  <div class="verdict warn">
+    <div class="vt">しかしAI検索クローラはJavaScriptを実行しない</div>
+    <p>ChatGPT（OpenAI）・Perplexity・Claude のクローラは<strong>クライアントサイドJSをレンダリングしない</strong>。CSR依存のサイトは、これらのプラットフォームからは「空白ページ」に見える。実地テストでChatGPTは「JavaScriptベースのレンダリングに依存しているためページ内容を読めない」と明示的に回答し、Perplexity・Claudeでも同じ失敗が再現している。</p>
+    <p>影響は「引用されない」だけでなく、ChatGPTの「More」欄やPerplexityの「Reviewed」欄への格下げ（Citationsに載らない）、スニペット欠落として観測されている。</p>
+    <p><mark>manebiはLLMO対策にS&amp;Sへ400万円を投資している。</mark>CSR寄りの実装はその投資と正面から衝突する。JS構成を採るなら全ページSSG/SSRが必須条件になる。</p>
+  </div>
+</section>
+
+<section id="s5">
+  <h2><span class="no">Q5</span>非エンジニアの日常更新は成立するか</h2>
+  <p class="lead">ここが今回の調査で最も判断を左右した論点。<strong>ヘッドレス化を売っているベンダー自身が「非エンジニアの更新」を非推奨対象に挙げている。</strong></p>
+
+  <blockquote>
+    ヘッドレスCMSを導入すべきは、①最新のJSフレームワークが利用できるフロントエンドエンジニアやWebデザイナーがいる会社 ②サイトの規模がそこまで大きくなく、高頻度にデザインの変更が必要なサイトを持っている会社。
+    <cite>LYZON（ヘッドレス／従来型CMS両方を提供するベンダー）</cite>
+  </blockquote>
+  <p>同社は<strong>「大量のコンテンツを効率よく管理したいユーザー」「JSのスキルのないユーザーが簡単にサイトを更新できるCMSを作りたいユーザー」を明確に非推奨対象</strong>としている。実際の失敗例として、社内にWebデザイナーがいてもTypeScript/Reactの改修とデータ構造の理解が想定以上に難しく、運用費が激増したケースを挙げている。</p>
+  <p>ブースターテクノロジー（移行支援を売る側）も同様に、非エンジニアが管理画面から更新したいならAstro単体では不十分でヘッドレスCMS併用を推奨、適用条件は「更新頻度がそれほど高くない、または開発チームが更新フローに関与できる」こと、としている。</p>
+
+  <h3>成立している事例の共通点＝ヘッドレスCMS併用</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>事例</th><th>非エンジニア運用</th></tr></thead>
+    <tbody>
+      <tr><td>F2T</td><td><span class="chip ok">成立</span>microCMSの日本語管理画面。ただし無料枠は月間APIリクエスト10,000回</td></tr>
+      <tr><td>Webクリエイターボックス</td><td><span class="chip ok">成立</span>microCMSは「APIキー等の触ってはいけない領域」と「操作して良い領域」が明確に分離</td></tr>
+      <tr><td>ジカーズ</td><td><span class="chip ok">成立</span>ただしGUIではなくスラッシュコマンド。運用者はUXデザイナー/PdMでCLIに抵抗がない層</td></tr>
+      <tr><td>talental</td><td><span class="chip ng">未解決</span>管理画面を作っておらず「自分だけが触る前提」</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>失われる機能と代替手段（技術的にはすべて代替可能）</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>WordPressで得ていたもの</th><th>ヘッドレス構成での代替</th><th>コスト</th></tr></thead>
+    <tbody>
+      <tr><td>Yoast/RankMathのメタ管理</td><td>CMS側にSEOフィールドのスキーマを自作（例：Sanityの <span class="u">seoFields</span> 型でtitle/description/canonical/robots/OGP/hreflang/カスタムmetaを一括提供）。編集画面内のライブSEOプレビューも実装可</td><td>プラグイン導入ではなく<strong>開発</strong></td></tr>
+      <tr><td>XMLサイトマップ自動生成</td><td><span class="u">@astrojs/sitemap</span> 等で自動生成可。ただし <span class="u">lastmod</span> の正確性が要件（Googleが再クロール優先度に使う）、5万URL超はインデックス分割</td><td>低</td></tr>
+      <tr><td>構造化データ</td><td>ヘッドレスでは自動出力されず<strong>フロントエンド側で手実装</strong>が必要。スキーマ型＋レンダーヘルパーは提供されている</td><td>中</td></tr>
+      <tr><td>リダイレクト管理</td><td>CMSにredirectドキュメント型（source/destination/permanent/enabled）を持たせ編集者が管理する設計が公式に提示されている。<mark>ただしVercelのNext.js configリダイレクトは1,024件上限</mark>、超える場合はミドルウェア自作</td><td>中〜高</td></tr>
+      <tr><td>canonical管理</td><td>ヘッドレスは「バックエンドURL＋フロントURL」の重複インデックスリスクがあり、意図的な設定が必須</td><td>中</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">参考値：Core Web Vitalsの3指標すべてを満たすページは、1つでも落ちるページより約10%多くオーガニッククリックを得る（Google Search Central 2025、Jottler経由）。静的化の効果はゼロではないが、順位への直接効果は各ソースとも「間接的・限定的」と慎重に書いている。</p>
+</section>
+
+<section id="s6">
+  <h2><span class="no">Q6</span>AI生成コード特有のリスク</h2>
+  <p class="lead">SEOとは別枠で、定量データが揃っている領域。いずれも一次調査。</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>領域</th><th>実測データ</th><th>出典</th></tr></thead>
+    <tbody>
+      <tr><td><strong>セキュリティ</strong></td><td>LLMが生成したコードの<strong>45%のテストケースでセキュリティ脆弱性が持ち込まれた</strong>。100超のLLMをJava/JavaScript/Python/C#で横断評価。<mark>モデルが新しく大きくなっても改善しない</mark>（＝最新モデルを使えば安全、は成り立たない）</td><td>Veracode 2025 GenAI Code Security Report</td></tr>
+      <tr><td><strong>保守性</strong></td><td>2023〜2026の6.23億件のコード変更を分析。コードブロックの重複が<strong>81%増</strong>（40.3→73.0／百万行）、リファクタリングは<strong>21%（2022）→3.8%に崩落</strong>、ファイル跨ぎの関数呼び出し35%減、レガシー保守74%減。開発者はリファクタするより<strong>約5倍コピペしやすい</strong></td><td>GitClear「The Maintainability Gap」2026年1月</td></tr>
+      <tr><td><strong>アクセシビリティ</strong></td><td>査読論文。ChatGPT 4o / Copilot Pro / Claude 3.7 Sonnet / Grok 3 は意味的に妥当なHTMLは書けるが、<strong>追加プロンプトと人間の介入なしにWCAG 2.1完全準拠には達しない</strong>。フォームやテーブル等のB2Bサイト頻出UIで検証済み</td><td>Universal Access in the Information Society, 2025年7月</td></tr>
+      <tr><td><strong>情報漏えい</strong></td><td>vibe codingツール（Lovable/Base44/Replit/Netlify）製の公開資産38万件をスキャンし、<strong>約5,000件が機微な企業・個人情報を露出</strong>。医療記録・金融データ・Fortune 500の社内文書を含む。<mark>主因はコード品質ではなく「初期設定が公開」＋非エンジニア運用者</mark></td><td>RedAccess調査 ／ Axios 2026年5月</td></tr>
+      <tr><td>一貫性</td><td>ページ単位でAIに作らせると個別ページは成立するが、<strong>サイト全体でトンマナが徐々にズレる</strong>（当事者の実務報告）</td><td>talental</td></tr>
+    </tbody>
+  </table></div>
+  <p>GitClearの結論は「AIが悪いコードを書く」ではなく、<strong>デフォルトのAIワークフローが「通ったテスト・閉じたチケット」という原子的成果に最適化されている</strong>ことが原因、という整理。つまり規律あるレビュー工程で緩和できる性質の問題。Axiosの漏えいも同様にガバナンスの問題で、組織的統制があれば回避できる。</p>
+  <p class="muted">ただしいずれも「人間のレビュー工程を組み込むこと」が前提条件になる。<strong>公開まで2日</strong>のような速度は、この前提と両立しない。</p>
+</section>
+
+<section id="s7">
+  <h2><span class="no">結論</span>manebi.co.jp への実務判断</h2>
+
+  <div class="verdict no">
+    <div class="vt">WordPressを外すこと自体はSEOリスクではない。だが今回のリニューアルで外すべきではない。</div>
+    <p>理由はSEOではなく、以下の3点。</p>
+  </div>
+
+  <ol class="rec">
+    <li><strong>AI集客エンジンがWordPress前提で組まれている。</strong>島崎さんのエンジンは講座LP・記事・FAQ・構造化データを <span class="u">forceDraft()</span> でWordPress下書きとして生成し、公開ボタンは人間がWP管理画面で押す設計になっている。CMSを外すと、この入稿経路と承認フローを丸ごと作り直すことになる。要件定義v1.6の運用要件（教材数8,000等のグローバル値管理、CTAのブロックパターン化、比較表のデータ管理）も同じくWP管理画面前提。</li>
+    <li><strong>非エンジニアの日常更新はヘッドレスの構造的弱点。</strong>ヘッドレスを売るベンダー自身が「大量コンテンツを効率よく管理したい」「JSスキルのないユーザーが更新する」用途を非推奨に挙げている。manebiは月6本のリライト運用を非エンジニアが回しており、まさにこの非推奨条件に該当する。</li>
+    <li><strong>AI検索クローラはJSを実行しない。</strong>LLMOに400万円を投じている以上、CSR寄りの構成は投資を毀損する。仮にJS構成を採るなら全ページSSG/SSRが絶対条件になり、その制約下でWordPressより優れる根拠は今回の調査では見つからなかった。</li>
+  </ol>
+
+  <h3>一方で、AIコーディングは全面的に使うべき</h3>
+  <p>今回の事例が示したのは「WordPressを捨てるべき」ではなく、<mark>AIエージェントが扱いやすいコードベースかどうかが新しい選定基準になった</mark>ということ（F2TがWebflowを捨てた理由がまさにこれ）。WordPressはPHPテーマという素のコードで動くので、<strong>Claude Codeでテーマを実装するのは何の障害もない</strong>。ここが最も費用対効果が高い。</p>
+  <ul>
+    <li>テンプレート13種の実装をAIコーディングで行い、制作コストを圧縮する</li>
+    <li>ページビルダー系プラグイン（独自構文でAIが触れない）は採用しない。<strong>素のPHPテンプレート＋ブロックパターン</strong>で組む</li>
+    <li>速度改善はWordPressのままでも可能（静的キャッシュ、画像最適化、不要プラグイン削減）。CWVは「3指標達成で約10%クリック増」程度の間接効果であり、基盤を捨てる理由には足りない</li>
+  </ul>
+
+  <h3>リニューアルに必ず組み込む安全装置</h3>
+  <p>CMSを維持しても、今回はIA変更・URL新設・テンプレート刷新を伴うため、Q3の事故はそのまま起こりうる。以下を要件定義書に反映する。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>装置</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>段階リリース</td><td>Google公式「一度に1つだけ変えろ」に従い、<strong>T9コラムCTA先行 → 新設ページ群 → 既存ページ刷新</strong>の順で分割公開。順位変動の原因を切り分けられる状態を保つ</td></tr>
+      <tr><td>URL温存を第一原則</td><td>既存URLは原則変更しない（要件定義v1.6の方針を維持）。covid19事例と同じく<strong>リダイレクトより「URLを変えない」ほうが安全</strong></td></tr>
+      <tr><td>公開前チェックリスト</td><td>①staging noindexの解除確認 ②リダイレクトチェーンとrobots.txtブロックの検査 ③canonicalが実在URLを指すか ④旧サイトマップが404を返していないか ⑤JSファイルをrobots.txtでブロックしていないか ⑥内部ナビから消えるリンクの棚卸し</td></tr>
+      <tr><td>ロールバック基準</td><td>公開前に「どの指標がどれだけ落ちたら戻すか」を数値で決めておく。判断には数週間〜数ヶ月の観測期間が要ることも事前に合意しておく</td></tr>
+      <tr><td>AI生成コードのレビュー工程</td><td>セキュリティ（45%に脆弱性）・アクセシビリティ（WCAG非準拠）・重複コードは人間のレビューでしか止まらない。速度優先で工程を飛ばさない</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer>
+  <p><strong>調査手法</strong>：5方向の並列Web検索 → 26ソースの本文取得 → 242の検証可能な主張を抽出 → 3票の敵対的検証。日英両言語の情報源を対象。<span class="muted">※一部の主張は検証エージェントが組織の利用上限により実行できず未検証（原文引用は取得済み）。Google公式ドキュメントとMueller発言、Vercel/Veracode/GitClear/査読論文の数値は検証済みまたは一次情報。</span></p>
+  <p class="small"><strong>主要ソース</strong>：Google Search Central（Site moves ／ JavaScript SEO Basics）、Search Engine Journal（CMS ranking factor ／ Mueller on vibe coding）、Search Engine Roundtable（Mueller on CMS 2025）、Vercel × MERJ（JSレンダリング実測）、GSQI（AI検索クローラのJS非実行）、Sitebulb（移行事故ガイド）、hooshmand.net（移行失敗postmortem）、Veracode、GitClear、Universal Access in the Information Society、Axios／RedAccess、Sanity Learn、Kinsta、Jottler、Search Engine Land、F2T、talental、note（ジカーズ）、Zenn、microCMS、ブースターテクノロジー、LYZON</p>
+</footer>
+</div>
+</body>
+</html>

@@ -27,7 +27,17 @@ manebi サービスサイト（https://manebi.co.jp/ ）のフルリニューア
 | 02 | [Phase 1 設計書](docs/02-phase1-design.md) | 新グローバルナビの全リンク定義／フッター構成／表記変更一覧／T9コラム記事テンプレートのワイヤーフレームとCTA設計 |
 | 03 | [調査：脱WordPressとSEO](docs/03-research-wordpress-seo.md) | CMSはランキング要因か／AI生成サイトの実例／移行で順位が落ちる原因／非エンジニア運用の可否／AI生成コードのリスク |
 
-スタイル付きのHTML版は [`html/`](html/) に格納（ブラウザで開くと整形された状態で閲覧できる）。内容はMarkdown版と同一。
+### 閲覧用サイト（GitHub Pages）
+
+整形された状態で読めるWebサイトを公開しています。
+
+**https://matsuo-boop.github.io/service-site-renewal-01/**
+
+- `index.html` … トップページ
+- `requirements/` `phase1-design/` `research/` … 各ドキュメント
+- `html/` … 変換元のHTML（Artifact版）
+
+Markdown版（`docs/`）はGitHub上でのレビュー・差分確認・行単位コメント用、Pages版は共有・閲覧用です。内容は同一。
 
 ---
 
@@ -66,6 +76,13 @@ manebi サービスサイト（https://manebi.co.jp/ ）のフルリニューア
 5. **AI生成コードのレビュー工程** — セキュリティ・アクセシビリティ・重複コードは人間のレビューでしか止まらない
 
 ---
+
+## 公開範囲について
+
+> **注意**：本リポジトリには、CV実績・チャネル別リード数・競合分析・料金方針など社外秘の情報が含まれます。
+> リポジトリをPublicのままにするとGitHub Pagesのサイトも**URLを知っていれば誰でも閲覧できる**状態になります。
+> 各ページには `noindex` を入れて検索エンジンへの掲載は防いでいますが、アクセス制限ではありません。
+> 社内限定にする場合は、リポジトリをPrivateにしたうえでPagesのアクセス制御（GitHub Team以上）を使うか、Pagesを使わずリポジトリへの招待で共有してください。
 
 ## 更新について
 
