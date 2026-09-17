@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex, nofollow">
+<title>【プロトタイプ】料金・費用｜manebi eラーニング</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<div class="proto">
+  これは<b>リニューアル検討用のプロトタイプ</b>です。<b>単価は仮置きの数値</b>で、実際の料金表ではありません。
+  <a href="../">トップへ</a>
+</div>
+
+<header class="hd">
+  <div class="hd-in">
+    <a class="logo" href="../"><img src="../assets/wordmark.png" alt="manebi"></a>
+    <nav>
+      <a href="../#service">サービス</a>
+      <a href="../#feature">機能</a>
+      <a href="./" style="color:var(--link)">料金</a>
+      <a href="../#material">教材・研修</a>
+      <a href="../#case">導入事例</a>
+      <a href="../#faq">お役立ち</a>
+    </nav>
+    <span class="sp"></span>
+    <span class="sub">受講者ログイン ↗</span>
+    <a class="btn btn-ghost" href="#contact">無料デモ</a>
+    <a class="btn btn-primary" href="#contact">資料DL</a>
+  </div>
+</header>
+
+<div class="hero" style="padding:56px 0 34px">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot" style="background:var(--yellow)"></span>料金・費用</div>
+    <h1 style="font-size:clamp(27px,4vw,42px)">具体的な料金が分からないと、<br>検討はできません。</h1>
+    <p class="lead" style="margin-bottom:0">だから manebi は金額を公開しています。ID数を入力するだけで、初期費用から初月のお支払額まで、その場で分かります。</p>
+  </div>
+</div>
+
+<!-- ============ シミュレーター ============ -->
+<section style="padding-top:26px">
+  <div class="wrap">
+    <div class="simwrap">
+      <div class="simin">
+        <div class="field">
+          <label id="planlabel">プラン</label>
+          <div class="plans" role="tablist" aria-labelledby="planlabel">
+            <button role="tab" aria-selected="false" data-plan="lite">Lite<br><span style="font-weight:400;font-size:11.5px">基本機能</span></button>
+            <button role="tab" aria-selected="true" data-plan="standard">Standard<br><span style="font-weight:400;font-size:11.5px">全機能＋AI</span></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ids">ご利用想定ID数（受講者数）</label>
+          <div class="numrow">
+            <input type="number" id="ids" value="100" min="1" max="10000" step="1" inputmode="numeric">
+            <span>名</span>
+          </div>
+          <input type="range" id="range" value="100" min="1" max="3000" step="1" aria-label="ID数スライダー">
+          <div class="presets">
+            <button data-n="20">20名</button>
+            <button data-n="50">50名</button>
+            <button data-n="100">100名</button>
+            <button data-n="300">300名</button>
+            <button data-n="500">500名</button>
+            <button data-n="1000">1,000名</button>
+            <button data-n="3000">3,000名</button>
+          </div>
+        </div>
+
+        <p class="micro" style="margin-top:4px">
+          当月に使うIDのみの課金です。人数が減った月は、その分お支払いも下がります。
+        </p>
+      </div>
+
+      <div class="simout" aria-live="polite">
+        <div style="font-size:13px;color:var(--ink2)">想定 月額費用（税抜）</div>
+        <div class="res-main" id="monthly">80,000<small> 円</small></div>
+        <div class="res-note" id="unitnote">1IDあたり 800円 × 100名</div>
+
+        <div style="height:18px"></div>
+        <div class="res-row"><span class="k">初期費用（初回のみ）</span><span class="v">100,000 円</span></div>
+        <div class="res-row"><span class="k">初月のお支払額</span><span class="v" id="firstmonth">180,000 円</span></div>
+        <div class="res-row"><span class="k">年間（12ヶ月＋初期費用）</span><span class="v" id="yearly">1,060,000 円</span></div>
+
+        <div style="margin-top:22px">
+          <a class="btn btn-primary btn-lg" href="#contact" style="width:100%">この見積もりプランで相談する</a>
+        </div>
+        <p class="micro" style="text-align:center">無理な営業はいたしません。お見積りだけでもOKです。</p>
+      </div>
+    </div>
+
+    <p class="micro" style="margin-top:18px">
+      ※最低ご利用料金は月額19,800円です。1,000名を超える場合は個別にお見積りいたします。<br>
+      <b style="color:var(--link)">※本プロトタイプの単価はデモ用の仮の数値です。</b>実際の料金は営業担当にご確認ください。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 含まれるもの ============ -->
+<section class="tint">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot" style="background:var(--blue)"></span>料金の内訳</div>
+    <h2>あとから増える費用を、なくしました。</h2>
+    <p class="sub">eラーニングは「月額は安いが、結局あれこれ足された」が起きやすい領域です。何が含まれていて、何が他社で発生しがちなのかを並べました。</p>
+
+    <div class="incl">
+      <div class="card">
+        <h3><span style="color:var(--link)">◎</span> manebi の月額に含まれるもの</h3>
+        <ul>
+          <li>約8,000教材の受け放題（<b>追加購入なし</b>）</li>
+          <li>受講管理・進捗レポート・テスト・アンケート</li>
+          <li>AI機能（コースマップ自動作成・自動字幕・多言語翻訳・AIチャットサポート）</li>
+          <li>自社動画のアップロードと配信</li>
+          <li>電話・メール・Zoomでのサポート、オンボーディング支援</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span style="color:var(--mute)">−</span> 他社で発生しがちな追加費用</h3>
+        <ul>
+          <li>教材の<b>追加購入費</b>（1コースごとの課金）</li>
+          <li>教材を選ぶ<b>人件費</b>（数千本から自社で選定）</li>
+          <li><b>サポート費用</b>の別建て</li>
+          <li><b>AI機能の利用料</b>が別オプション</li>
+          <li>動画容量の超過課金</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ プラン比較 ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot" style="background:var(--purple)"></span>プラン</div>
+    <h2>2つのプランがあります。</h2>
+
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th>機能</th><th class="c">Lite</th><th class="c">Standard</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>約8,000教材 受け放題</td><td class="c">○</td><td class="c">○</td></tr>
+          <tr><td>受講管理・進捗レポート</td><td class="c">○</td><td class="c">○</td></tr>
+          <tr><td>自社動画アップロード</td><td class="c">○</td><td class="c">○</td></tr>
+          <tr><td>テスト・アンケート機能</td><td class="c">○</td><td class="c">○</td></tr>
+          <tr><td>AIコースマップ自動作成</td><td class="c">−</td><td class="c">○</td></tr>
+          <tr><td>自動字幕・多言語翻訳</td><td class="c">−</td><td class="c">○</td></tr>
+          <tr><td>AIチャットサポート</td><td class="c">−</td><td class="c">○</td></tr>
+          <tr><td>電子書籍（eBook）</td><td class="c">−</td><td class="c">○</td></tr>
+          <tr><td>SSO連携・WebAPI</td><td class="c">オプション</td><td class="c">オプション</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 他社比較 ============ -->
+<section class="tint">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot" style="background:var(--yellow)"></span>他社との比較</div>
+    <h2>比較検討の材料も、そのまま置いておきます。</h2>
+    <p class="sub">各社の公開情報をもとに作成しています。比較表はExcel形式でもダウンロードいただけます。</p>
+
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th>　</th><th>月額（1IDあたり）</th><th>最低利用</th><th>初期費用</th><th>教材数</th><th>集合研修</th><th>AI機能</th></tr>
+        </thead>
+        <tbody>
+          <tr class="me">
+            <td>manebi</td><td>500円〜</td><td>月19,800円〜</td><td>100,000円</td><td>約8,000</td><td class="c">○</td><td class="c">○</td>
+          </tr>
+          <tr><td>A社</td><td>1,650円</td><td>20ID〜</td><td>110,000円</td><td>9,000本</td><td class="c">−</td><td class="c">△</td></tr>
+          <tr><td>B社</td><td>個別見積</td><td>−</td><td>100,000円〜</td><td>300コース以上</td><td class="c">○</td><td class="c">−</td></tr>
+          <tr><td>C社</td><td>1,080〜1,620円</td><td>30ID〜</td><td>100,000円</td><td>非公開</td><td class="c">○</td><td class="c">−</td></tr>
+          <tr><td>D社</td><td>360〜600円</td><td>−</td><td>0円</td><td>6,000本</td><td class="c">−</td><td class="c">△</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="micro">※各社の公開情報をもとに作成（プロトタイプのためサンプル値）。「−」は各社サイトで確認できなかった項目です。</p>
+  </div>
+</section>
+
+<!-- ============ 料金FAQ ============ -->
+<section>
+  <div class="wrap" style="max-width:820px">
+    <div class="eyebrow"><span class="dot" style="background:var(--blue)"></span>料金についてのご質問</div>
+    <h2>費用まわりで、よくいただくご質問。</h2>
+
+    <div class="faq">
+      <details open>
+        <summary>最低は何名から利用できますか？</summary>
+        <div class="a">人数の下限はありません。ただし<b>最低ご利用料金として月額19,800円</b>をいただいています。20名以下でご利用の場合は、この金額が月額となります。</div>
+      </details>
+      <details>
+        <summary>途中でID数を増減できますか？</summary>
+        <div class="a">できます。<b>当月に使うIDのみの課金</b>のため、新入社員研修の期間だけ増やす、繁忙期を過ぎたら減らす、といった運用が可能です。減らした月はお支払いもその分下がります。</div>
+      </details>
+      <details>
+        <summary>初期費用には何が含まれますか？</summary>
+        <div class="a">アカウント発行、初期設定、管理者向けの操作説明、オンボーディング支援が含まれます。初回のみのお支払いで、更新時には発生しません。</div>
+      </details>
+      <details>
+        <summary>契約期間と解約条件を教えてください。</summary>
+        <div class="a">契約期間は1年間で、その後は自動更新です。解約は1年経過後から可能で、更新月の1ヶ月前までにお申し出ください。期間内の解約の場合、残存期間分の費用が発生します。</div>
+      </details>
+      <details>
+        <summary>助成金は使えますか？</summary>
+        <div class="a">人材開発支援助成金の対象となる場合があります。要件は研修内容や企業規模によって異なりますので、申請手順とあわせてご案内します。お問い合わせ時にお知らせください。</div>
+      </details>
+      <details>
+        <summary>集合研修の費用は別ですか？</summary>
+        <div class="a">集合研修は内容・回数・受講人数に応じた個別のお見積りとなります。eラーニングと組み合わせる場合は、全体の設計をふまえてご提案しますので、まとめてご相談ください。</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="final" id="contact">
+  <div class="wrap center">
+    <h2>試算した内容のまま、ご相談いただけます。</h2>
+    <p class="sub">入力いただいたID数とプランは、そのままお問い合わせ内容に引き継がれます。</p>
+    <div class="cta3">
+      <a href="#contact">
+        <div class="t">この条件で見積もりを依頼する</div>
+        <p id="ctasummary">Standard／100名／月額80,000円の想定でご相談します。</p>
+        <div class="go">無理な営業はいたしません →</div>
+      </a>
+      <a href="#contact">
+        <div class="t">料金表を資料で受け取る</div>
+        <p>ボリュームディスカウントの詳細を含む料金表をお送りします。</p>
+        <div class="go">1分で完了 →</div>
+      </a>
+      <a href="#contact">
+        <div class="t">実際の画面を見たい</div>
+        <p>最短30分でログイン情報をお届け。日程調整は不要です。</p>
+        <div class="go">無料デモを試す →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fbottom" style="margin-top:0; border-top:none; padding-top:0">
+      <img src="../assets/wordmark.png" alt="manebi">
+      <span class="badge">東証グロース上場</span>
+      <span class="badge">ISMS認証取得</span>
+      <span class="badge">プライバシーマーク</span>
+      <span class="sp"></span>
+      <span>© manebi Inc.（プロトタイプ）</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- 料金シミュレーター（単価はプロトタイプ用の仮置き）----
+var TIERS = {
+  standard: [ [49,1000], [99,900], [299,800], [999,650], [Infinity,550] ],
+  lite:     [ [49,800],  [99,700], [299,620], [999,550], [Infinity,500] ]
+};
+var MIN_MONTHLY = 19800;
+var INITIAL = 100000;
+var plan = 'standard';
+
+function unitPrice(n){
+  var t = TIERS[plan];
+  for (var i = 0; i < t.length; i++) if (n <= t[i][0]) return t[i][1];
+  return t[t.length-1][1];
+}
+function yen(n){ return n.toLocaleString('ja-JP'); }
+
+function calc(){
+  var n = parseInt(document.getElementById('ids').value, 10);
+  if (isNaN(n) || n < 1) n = 1;
+  if (n > 10000) n = 10000;
+
+  var u = unitPrice(n);
+  var raw = u * n;
+  var monthly = Math.max(raw, MIN_MONTHLY);
+
+  document.getElementById('monthly').innerHTML = yen(monthly) + '<small> 円</small>';
+  document.getElementById('firstmonth').textContent = yen(monthly + INITIAL) + ' 円';
+  document.getElementById('yearly').textContent = yen(monthly * 12 + INITIAL) + ' 円';
+
+  var note = '1IDあたり ' + yen(u) + '円 × ' + yen(n) + '名';
+  if (monthly > raw) note += '（最低ご利用料金 ' + yen(MIN_MONTHLY) + '円を適用）';
+  if (n >= 1000) note += ' ／ 1,000名以上は個別見積で更にお安くなる場合があります';
+  document.getElementById('unitnote').textContent = note;
+
+  var label = (plan === 'standard') ? 'Standard' : 'Lite';
+  document.getElementById('ctasummary').textContent =
+    label + '／' + yen(n) + '名／月額' + yen(monthly) + '円の想定でご相談します。';
+}
+
+var ids = document.getElementById('ids');
+var range = document.getElementById('range');
+
+ids.addEventListener('input', function(){
+  var v = parseInt(ids.value, 10);
+  if (!isNaN(v)) range.value = Math.min(Math.max(v, 1), 3000);
+  calc();
+});
+range.addEventListener('input', function(){ ids.value = range.value; calc(); });
+
+document.querySelectorAll('.presets button').forEach(function(b){
+  b.addEventListener('click', function(){
+    ids.value = b.dataset.n;
+    range.value = Math.min(b.dataset.n, 3000);
+    calc();
+  });
+});
+document.querySelectorAll('.plans button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.plans button').forEach(function(x){ x.setAttribute('aria-selected','false'); });
+    b.setAttribute('aria-selected','true');
+    plan = b.dataset.plan;
+    calc();
+  });
+});
+
+calc();
+</script>
+</body>
+</html>
